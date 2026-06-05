@@ -1,5 +1,4 @@
 .idea/
 .env
 __pycache__/
-notes.txt
-test.py
+notes
