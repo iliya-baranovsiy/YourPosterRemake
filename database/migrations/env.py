@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 from config.configurations import settings
 from database.engines import Base
+from database.parse_db.models import NewsTable
 
 config = context.config
 
