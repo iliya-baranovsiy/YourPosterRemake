@@ -10,6 +10,8 @@ class Settings:
     DB_PORT = os.getenv("DB_PORT")
     DB_USER = os.getenv("DB_USER")
     DB_PASSWORD = os.getenv("DB_PASSWORD")
+    BOT_TOKEN = os.getenv("TOKEN")
+    APP_URL = os.getenv("APP_URL")
 
     @property
     def get_async_db_url(self):
