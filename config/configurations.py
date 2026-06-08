@@ -12,6 +12,9 @@ class Settings:
     DB_PASSWORD = os.getenv("DB_PASSWORD")
     BOT_TOKEN = os.getenv("TOKEN")
     APP_URL = os.getenv("APP_URL")
+    REDIS_HOST = os.getenv("REDIS_HOST")
+    REDIS_PORT = os.getenv("REDIS_PORT")
+    REDIS_DB = os.getenv("REDIS_DB")
 
     @property
     def get_async_db_url(self):

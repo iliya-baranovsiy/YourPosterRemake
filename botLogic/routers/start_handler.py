@@ -11,7 +11,7 @@ router = Router(name=__name__)
 
 @router.message(CommandStart())
 async def start_dialog(msg: Message):
-    user = User(tg_id=msg.chat.id, username='@' + msg.chat.username)
+    user = User(tg_id=msg.chat.id, username=msg.chat.username)
     user_repo = UserRepository(user)
     await user_repo.create_record()
     buttons = get_main_menu_kb()
