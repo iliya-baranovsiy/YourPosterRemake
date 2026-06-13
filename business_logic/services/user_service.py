@@ -13,7 +13,17 @@ class UserService:
             return
         user_data = await self.repo.get_record(tg_id)
         if user_data:
+            await self.cache.add_lost_user_cache(user_data)
             return
         username = "@" + username if username else "Undefind"
         await self.repo.create_record(tg_id, username)
-        await self.cache.add_user_cache(tg_id=tg_id, username=username)
+        await self.cache.create_user_cache(tg_id=tg_id, username=username)
+
+    async def get_user(self, tg_id):
+        user_cache = await self.cache.get_user_cache(tg_id=tg_id)
+        if user_cache:
+            return user_cache
+        user_data = await self.repo.get_record(tg_id=tg_id)
+        if user_data:
+            await self.cache.add_lost_user_cache(user_data)
+            return user_data

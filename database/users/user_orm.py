@@ -19,7 +19,8 @@ class UserOrm:
     @staticmethod
     async def get_user(tg_id):
         async with async_session() as session:
-            query = select(UserModel.username, UserModel.balance, PaymentModel).join(
+            query = select(UserModel.username, UserModel.balance, PaymentModel.payment_plan, PaymentModel.automatic_buy,
+                           PaymentModel.end_date).join(
                 PaymentModel, UserModel.tg_id == PaymentModel.user_id
             ).where(
                 UserModel.tg_id == tg_id
