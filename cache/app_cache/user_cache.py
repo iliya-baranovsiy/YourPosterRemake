@@ -8,7 +8,7 @@ class UserCache:
         self.cache_name = "user_data_cache"
 
     async def add_cache(self, tg_id, username, payment_plan, balance, automatic_buy,
-                        end_date):
+                        end_date, pending_plan, priority):
         async with redis_engine as redis:
             json_data = {
                 "tg_id": tg_id,
@@ -17,6 +17,8 @@ class UserCache:
                 "balance": float(balance),
                 "automatic_buy": automatic_buy,
                 "end_date": end_date,
+                "pending_plan": pending_plan,
+                "priority": priority,
             }
             await redis.hset(self.cache_name, tg_id, json.dumps(json_data))
 
@@ -28,12 +30,13 @@ class UserCache:
     async def update_cache(self, user: User):
         async with redis_engine as redis:
             existing_cache = await self.get_cache(user.tg_id)
-            print(existing_cache)
             existing_cache["username"] = user.username
-            existing_cache["payment_plan"] = user.payment_plan_str
+            existing_cache["payment_plan"] = user.subscription.payment_plan_str
             existing_cache["balance"] = float(user.balance)
             existing_cache["automatic_buy"] = user.automatic_buy
-            existing_cache["end_date"] = user.end_date
+            existing_cache["end_date"] = user.subscription.end_date
+            existing_cache["priority"] = user.subscription.priority
+            existing_cache["pending_plan"] = user.subscription.pending_plan
             await redis.hset(self.cache_name, user.tg_id, json.dumps(existing_cache))
 
     async def clear_cache(self):

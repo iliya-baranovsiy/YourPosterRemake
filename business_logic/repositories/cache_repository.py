@@ -10,10 +10,10 @@ class UserCacheRepository:
 
     async def create_user_cache(self, tg_id, username="Undefind", payment_plan="STANDART", balance=0.0,
                                 automatic_buy=False,
-                                end_date=None):
+                                end_date=None, priority=0, pending_plan="STANDART"):
         await self.cache.add_cache(tg_id=tg_id, username=username, payment_plan=payment_plan, balance=balance,
                                    automatic_buy=automatic_buy,
-                                   end_date=end_date)
+                                   end_date=end_date, priority=priority, pending_plan=pending_plan)
 
     async def get_user_cache(self, tg_id):
         cache_data = await self.cache.get_cache(tg_id=tg_id)
@@ -21,7 +21,9 @@ class UserCacheRepository:
             return User(tg_id=tg_id, username=cache_data["username"], balance=cache_data["balance"],
                         automatic_buy=cache_data["automatic_buy"],
                         subscription=Subscription(payment_plan=PaymentOptions(cache_data["payment_plan"]),
-                                                  end_date_row=cache_data["end_date"])
+                                                  end_date_row=cache_data["end_date"],
+                                                  priority=cache_data["priority"],
+                                                  pending_plan=cache_data["pending_plan"])
                         )
         return None
 
@@ -32,4 +34,5 @@ class UserCacheRepository:
         await self.create_user_cache(tg_id=user.tg_id, username=user.username,
                                      payment_plan=user.subscription.payment_plan_str,
                                      balance=user.balance, automatic_buy=user.automatic_buy,
-                                     end_date=user.subscription.end_date)
+                                     end_date=user.subscription.end_date, pending_plan=user.subscription.pending_plan,
+                                     priority=user.subscription.priority)

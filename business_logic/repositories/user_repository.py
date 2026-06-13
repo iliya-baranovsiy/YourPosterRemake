@@ -13,8 +13,9 @@ class UserRepository:
     async def get_record(self, tg_id):
         user_data = await self.orm.get_user(tg_id)
         if user_data:
-            return User(tg_id=tg_id, username=user_data[0], balance=user_data[1],
-                        automatic_buy=user_data[3],
-                        subscription=Subscription(payment_plan=user_data[2], end_date_row=user_data[4])
+            return User(tg_id=tg_id, username=user_data.username, balance=user_data.balance,
+                        automatic_buy=user_data.automatic_buy,
+                        subscription=Subscription(payment_plan=user_data.payment_plan, end_date_row=user_data.end_date,
+                                                  priority=user_data.priority, pending_plan=user_data.priority)
                         )
         return None

@@ -3,6 +3,7 @@ from sqlalchemy import select
 from .models import UserModel
 from ..payments.models import PaymentModel
 from ..engines import async_session
+from .user_dto import UserDto
 
 
 class UserOrm:
@@ -20,7 +21,7 @@ class UserOrm:
     async def get_user(tg_id):
         async with async_session() as session:
             query = select(UserModel.username, UserModel.balance, PaymentModel.payment_plan, PaymentModel.automatic_buy,
-                           PaymentModel.end_date).join(
+                           PaymentModel.end_date, PaymentModel.priority, PaymentModel.pending_plan).join(
                 PaymentModel, UserModel.tg_id == PaymentModel.user_id
             ).where(
                 UserModel.tg_id == tg_id
@@ -28,6 +29,8 @@ class UserOrm:
             executing = await session.execute(query)
             result = executing.all()
             if result:
-                return result[0]
+                result = result[0]
+                return UserDto(username=result[0], balance=result[1], payment_plan=result[2], automatic_buy=result[3],
+                               end_date=result[4], priority=result[5], pending_plan=result[6])
             else:
                 return None

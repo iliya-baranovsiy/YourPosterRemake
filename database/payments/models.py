@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Index, ForeignKey, Enum, Date, text
 from datetime import date
-from .options import PaymentOptions
+from .options import PaymentOptions, PLAN_INFO
 from database.engines import Base
 
 
@@ -14,6 +14,10 @@ class PaymentModel(Base):
                                                          default=PaymentOptions.STANDART,
                                                          server_default=text("'STANDART'"))
     automatic_buy: Mapped[bool] = mapped_column(default=False)
+    pending_plan: Mapped[PaymentOptions] = mapped_column(Enum(PaymentOptions),
+                                                         default=PaymentOptions.STANDART,
+                                                         server_default=text("'STANDART'"))
+    priority: Mapped[int] = mapped_column(default=PLAN_INFO[PaymentOptions.STANDART].priority)
     activate_date: Mapped[date] = mapped_column(Date, nullable=True)
     end_date: Mapped[date] = mapped_column(Date, nullable=True)
 

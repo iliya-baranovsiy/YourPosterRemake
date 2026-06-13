@@ -7,6 +7,8 @@ from database.payments.options import PaymentOptions
 class Subscription:
     payment_plan: PaymentOptions
     end_date_row: datetime | None
+    priority: int
+    pending_plan: PaymentOptions
 
     @property
     def payment_plan_str(self):
