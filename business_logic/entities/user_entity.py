@@ -8,7 +8,7 @@ from database.payments.options import PaymentOptions
 class User:
     tg_id: int
     username: str
-    payment_plan: PaymentOptions | str
+    payment_plan: PaymentOptions
     balance: Decimal
     automatic_buy: bool
     end_date_row: datetime | None
