@@ -5,6 +5,7 @@ import contextlib
 import uvicorn
 import asyncio
 
+from cache.app_cache.user_cache import UserCache  # delete
 
 
 @contextlib.asynccontextmanager
@@ -31,4 +32,5 @@ async def start_bot():
 
 
 if __name__ == "__main__":
+    asyncio.run(UserCache().clear_cache())  # delete
     asyncio.run(start_bot())

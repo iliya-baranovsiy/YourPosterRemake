@@ -6,8 +6,8 @@ class UserCache:
     def __init__(self):
         self.cache_name = "user_data_cache"
 
-    async def add_cache(self, tg_id, username="Undefind", payment_plan="STANDART", balance=0, automatic_buy=False,
-                        end_date=None, activate_date=None):
+    async def add_cache(self, tg_id, username, payment_plan, balance, automatic_buy,
+                        end_date, activate_date):
         async with redis_engine as redis:
             json_data = {
                 "tg_id": tg_id,
@@ -25,4 +25,7 @@ class UserCache:
             cache = await redis.hget(self.cache_name, tg_id)
             return json.loads(cache) if cache else None
 
-# user_cache = UserCache()
+
+    async def clear_cache(self):
+        async with redis_engine as redis:
+            await redis.delete(self.cache_name)
