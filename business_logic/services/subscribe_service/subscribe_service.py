@@ -2,6 +2,7 @@ from database.payments.options import PaymentOptions, PLAN_INFO
 from .options import Action, ActionData
 from business_logic.services.user_service import UserService
 from .subscription_fabric import SubscriptionFabric
+from business_logic.common_options.status_option import Status
 
 
 class SubscribeService:
@@ -30,5 +31,16 @@ class SubscribeService:
         data = await fabric_method.get_confirmation_text(new_plan=new_plan)
         return data
 
-    async def change_payment_plan(self):
-        pass
+    async def change_payment_plan(self, new_plan: str, tg_id: int, action: Action) -> Status:
+        new_plan = PaymentOptions(new_plan)
+        user = await self._user_service.get_user(tg_id)
+        fabric_method = self._fabric.create(action)
+        if PLAN_INFO[new_plan].price <= user.balance:
+            try:
+                await fabric_method.execute(user=user, new_plan=new_plan)
+                return Status.OK
+            except Exception as e:
+                print(e)
+                return Status.BAD
+        else:
+            return Status.BAD

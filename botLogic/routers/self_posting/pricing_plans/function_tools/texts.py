@@ -6,3 +6,8 @@ def get_pricing_plan_text(user: User) -> str:
             f"<b>Действует по:</b> {user.subscription.end_date}\n"
             f"<b>Баланс:</b> {user.balance}")
     return text
+
+
+def get_un_success_text() -> str:
+    text = "Упс, что-то пошло не так, проверь средства на балансе и попробуй заново"
+    return text

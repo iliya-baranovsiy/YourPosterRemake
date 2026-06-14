@@ -1,3 +1,5 @@
+from decimal import Decimal
+from datetime import datetime
 from cache.app_cache.user_cache import UserCache
 from ..entities.user_entity import User
 from ..entities.payment_plan_entity import Subscription
@@ -18,12 +20,13 @@ class UserCacheRepository:
     async def get_user_cache(self, tg_id):
         cache_data = await self.cache.get_cache(tg_id=tg_id)
         if cache_data:
-            return User(tg_id=tg_id, username=cache_data["username"], balance=cache_data["balance"],
+            return User(tg_id=tg_id, username=cache_data["username"],
+                        balance=Decimal(cache_data["balance"]).quantize(Decimal("0.00")),
                         automatic_buy=cache_data["automatic_buy"],
                         subscription=Subscription(payment_plan=PaymentOptions(cache_data["payment_plan"]),
                                                   end_date_row=cache_data["end_date"],
                                                   priority=cache_data["priority"],
-                                                  pending_plan=cache_data["pending_plan"])
+                                                  pending_plan=PaymentOptions(cache_data["pending_plan"]))
                         )
         return None
 

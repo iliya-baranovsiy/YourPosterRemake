@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+from decimal import Decimal
 from ..redis_instance import redis_engine
 from business_logic.entities.user_entity import User
 
@@ -16,7 +18,7 @@ class UserCache:
                 "payment_plan": payment_plan,
                 "balance": float(balance),
                 "automatic_buy": automatic_buy,
-                "end_date": end_date,
+                "end_date": str(end_date) if end_date else None,
                 "pending_plan": pending_plan,
                 "priority": priority,
             }
@@ -25,16 +27,22 @@ class UserCache:
     async def get_cache(self, tg_id):
         async with redis_engine as redis:
             cache = await redis.hget(self.cache_name, tg_id)
-            return json.loads(cache) if cache else None
+            if cache:
+                data = json.loads(cache)
+                if data["end_date"] != "Бессрочно" and data["end_date"]:
+                    data["end_date"] = datetime.fromisoformat(data["end_date"]).date()
+                return data
+            else:
+                return None
 
     async def update_cache(self, user: User):
         async with redis_engine as redis:
             existing_cache = await self.get_cache(user.tg_id)
             existing_cache["username"] = user.username
             existing_cache["payment_plan"] = user.subscription.payment_plan_str
-            existing_cache["balance"] = float(user.balance)
+            existing_cache["balance"] = float(user.balance.quantize(Decimal("0.00")))
             existing_cache["automatic_buy"] = user.automatic_buy
-            existing_cache["end_date"] = user.subscription.end_date
+            existing_cache["end_date"] = str(user.subscription.end_date)
             existing_cache["priority"] = user.subscription.priority
             existing_cache["pending_plan"] = user.subscription.pending_plan
             await redis.hset(self.cache_name, user.tg_id, json.dumps(existing_cache))

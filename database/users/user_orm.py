@@ -1,7 +1,10 @@
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import select
+from sqlalchemy import select, update
+from decimal import Decimal
+from datetime import date
 from .models import UserModel
 from ..payments.models import PaymentModel
+from ..payments.options import PaymentOptions
 from ..engines import async_session
 from .user_dto import UserDto
 
@@ -34,3 +37,23 @@ class UserOrm:
                                end_date=result[4], priority=result[5], pending_plan=result[6])
             else:
                 return None
+
+    @staticmethod
+    async def update_user_data(tg_id: int, balance: Decimal, payment_plan: PaymentOptions, automatic_buy: bool,
+                               pending_plan: PaymentOptions, priority: int, activate_date: date,
+                               end_date: date):
+        async with async_session() as session:
+            payment_stmt = update(PaymentModel).values(
+                payment_plan=payment_plan,
+                automatic_buy=automatic_buy,
+                pending_plan=pending_plan,
+                priority=priority,
+                activate_date=activate_date,
+                end_date=end_date
+            ).where(PaymentModel.user_id == tg_id)
+            user_stmt = update(UserModel).values(
+                balance=balance
+            ).where(UserModel.tg_id == tg_id)
+            async with session.begin():
+                await session.execute(user_stmt)
+                await session.execute(payment_stmt)

@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 from database.payments.options import PaymentOptions
 
 
 @dataclass
 class Subscription:
     payment_plan: PaymentOptions
-    end_date_row: datetime | None
+    end_date_row: date | None
     priority: int
     pending_plan: PaymentOptions
 

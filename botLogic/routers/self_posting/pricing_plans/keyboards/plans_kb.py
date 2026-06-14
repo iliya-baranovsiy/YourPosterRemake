@@ -13,3 +13,10 @@ def get_plans_kb(self_buy: bool):
         [InlineKeyboardButton(text="Назад", callback_data="autoposting_menu")],
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)
+
+
+def get_back_to_plans():
+    kb = [
+        [InlineKeyboardButton(text="Назад", callback_data="payment_plans")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=kb)
