@@ -36,11 +36,17 @@ class SubscribeService:
         user = await self._user_service.get_user(tg_id)
         fabric_method = self._fabric.create(action)
         if PLAN_INFO[new_plan].price <= user.balance:
-            try:
-                await fabric_method.execute(user=user, new_plan=new_plan)
-                return Status.OK
-            except Exception as e:
-                print(e)
-                return Status.BAD
+            status = await self.fabric_execute(fabric_method=fabric_method, user=user, new_plan=new_plan)
+            return status
+        elif action == Action.UPGRADE:
+            status = await self.fabric_execute(fabric_method=fabric_method, user=user, new_plan=new_plan)
+            return status
         else:
+            return Status.BAD
+
+    async def fabric_execute(self, fabric_method, user, new_plan):
+        try:
+            await fabric_method.execute(user=user, new_plan=new_plan)
+            return Status.OK
+        except Exception as e:
             return Status.BAD

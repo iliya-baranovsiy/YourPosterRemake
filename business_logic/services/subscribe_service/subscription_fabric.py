@@ -22,6 +22,14 @@ class BaseSubFabric(ABC):
     async def execute(self, user: User, new_plan: PaymentOptions):
         pass
 
+    async def withdraw(self, user: User, new_plan: PaymentOptions):
+        user.balance -= PLAN_INFO[new_plan].price
+        if user.balance < 0:
+            raise UserCashException(user_id=user.tg_id, balance=user.balance)
+        else:
+            await self.repo.update(user=user, start_date=date.today())
+            await self.cache.update_user_cache(user=user)
+
 
 class Buy(BaseSubFabric):
     async def get_confirmation_text(self, new_plan):
@@ -34,12 +42,7 @@ class Buy(BaseSubFabric):
         user.subscription.payment_plan = new_plan
         user.subscription.priority = PLAN_INFO[new_plan].priority
         user.subscription.end_date_row = date.today() + timedelta(days=31)
-        user.balance -= PLAN_INFO[new_plan].price
-        if user.balance < 0:
-            raise UserCashException(user_id=user.tg_id, balance=user.balance)
-        else:
-            await self.repo.update(user=user, start_date=date.today())
-            await self.cache.update_user_cache(user=user)
+        await self.withdraw(user, new_plan)
 
 
 class Renew(BaseSubFabric):
@@ -50,7 +53,8 @@ class Renew(BaseSubFabric):
         return data
 
     async def execute(self, user, new_plan):
-        pass
+        user.subscription.end_date_row += timedelta(days=31)
+        await self.withdraw(user, new_plan)
 
 
 class Upgrade(BaseSubFabric):
@@ -61,7 +65,10 @@ class Upgrade(BaseSubFabric):
         return data
 
     async def execute(self, user, new_plan):
-        pass
+        user.subscription.payment_plan = new_plan
+        user.subscription.priority = PLAN_INFO[new_plan].priority
+        user.subscription.end_date_row = date.today() + timedelta(days=31)
+        await self.withdraw(user, new_plan)
 
 
 class Downgrade(BaseSubFabric):
@@ -72,7 +79,10 @@ class Downgrade(BaseSubFabric):
         return data
 
     async def execute(self, user, new_plan):
-        pass
+        user.automatic_buy = True
+        user.subscription.pending_plan = new_plan
+        await self.repo.update(user=user, start_date=date.today())
+        await self.cache.update_user_cache(user=user)
 
 
 class SubscriptionFabric:

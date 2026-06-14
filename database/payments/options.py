@@ -21,11 +21,11 @@ PLAN_INFO = {
         price=Decimal(0.0)
     ),
     PaymentOptions.PRO: PlanInfo(
-        priority=2,
+        priority=1,
         price=Decimal(2.99)
     ),
     PaymentOptions.VIP: PlanInfo(
-        priority=1,
+        priority=2,
         price=Decimal(5.99)
     )
 }

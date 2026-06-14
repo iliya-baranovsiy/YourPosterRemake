@@ -12,7 +12,7 @@ class UserCacheRepository:
 
     async def create_user_cache(self, tg_id: int,
                                 username: str = "Undefind",
-                                payment_plan: PaymentOptions = PaymentOptions.STANDART.value,
+                                payment_plan: str = PaymentOptions.STANDART.value,
                                 balance: float = 0.0,
                                 automatic_buy: bool = False,
                                 end_date: str | None = None, priority: int = 0,
@@ -46,11 +46,12 @@ class UserCacheRepository:
         await self.cache.update_cache(tg_id=user.tg_id,
                                       username=user.username,
                                       balance=float(user.balance),
-                                      payment_plan=user.subscription.payment_plan,
+                                      payment_plan=user.subscription.payment_plan_str,
                                       pending_plan=user.subscription.pending_plan.value,
                                       automatic_buy=user.automatic_buy,
                                       priority=user.subscription.priority,
-                                      end_date=str(user.subscription.end_date_row)
+                                      end_date=str(
+                                          user.subscription.end_date_row) if user.subscription.end_date_row else None
                                       )
 
     async def add_lost_user_cache(self, user: User):
