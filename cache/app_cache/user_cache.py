@@ -1,24 +1,27 @@
 import json
-from datetime import datetime
-from decimal import Decimal
 from ..redis_instance import redis_engine
-from business_logic.entities.user_entity import User
 
 
 class UserCache:
     def __init__(self):
         self.cache_name = "user_data_cache"
 
-    async def add_cache(self, tg_id, username, payment_plan, balance, automatic_buy,
-                        end_date, pending_plan, priority):
+    async def add_cache(self, tg_id: int,
+                        username: str,
+                        payment_plan: str,
+                        balance: float,
+                        automatic_buy: bool,
+                        end_date: str | None,
+                        pending_plan: str,
+                        priority: int):
         async with redis_engine as redis:
             json_data = {
                 "tg_id": tg_id,
                 "username": username,
                 "payment_plan": payment_plan,
-                "balance": float(balance),
+                "balance": balance,
                 "automatic_buy": automatic_buy,
-                "end_date": str(end_date) if end_date else None,
+                "end_date": end_date,
                 "pending_plan": pending_plan,
                 "priority": priority,
             }
@@ -27,25 +30,27 @@ class UserCache:
     async def get_cache(self, tg_id):
         async with redis_engine as redis:
             cache = await redis.hget(self.cache_name, tg_id)
-            if cache:
-                data = json.loads(cache)
-                if data["end_date"] != "Бессрочно" and data["end_date"]:
-                    data["end_date"] = datetime.fromisoformat(data["end_date"]).date()
-                return data
-            else:
-                return None
+            return json.loads(cache) if cache else None
 
-    async def update_cache(self, user: User):
+    async def update_cache(self,
+                           tg_id: int,
+                           username: str,
+                           payment_plan: str,
+                           balance: float,
+                           automatic_buy: bool,
+                           end_date: str,
+                           pending_plan: str,
+                           priority: int):
         async with redis_engine as redis:
-            existing_cache = await self.get_cache(user.tg_id)
-            existing_cache["username"] = user.username
-            existing_cache["payment_plan"] = user.subscription.payment_plan_str
-            existing_cache["balance"] = float(user.balance.quantize(Decimal("0.00")))
-            existing_cache["automatic_buy"] = user.automatic_buy
-            existing_cache["end_date"] = str(user.subscription.end_date)
-            existing_cache["priority"] = user.subscription.priority
-            existing_cache["pending_plan"] = user.subscription.pending_plan
-            await redis.hset(self.cache_name, user.tg_id, json.dumps(existing_cache))
+            existing_cache = await self.get_cache(tg_id)
+            existing_cache["username"] = username
+            existing_cache["payment_plan"] = payment_plan
+            existing_cache["balance"] = balance
+            existing_cache["automatic_buy"] = automatic_buy
+            existing_cache["end_date"] = end_date
+            existing_cache["priority"] = priority
+            existing_cache["pending_plan"] = pending_plan
+            await redis.hset(self.cache_name, tg_id, json.dumps(existing_cache))
 
     async def clear_cache(self):
         async with redis_engine as redis:
