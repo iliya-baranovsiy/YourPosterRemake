@@ -56,6 +56,16 @@ async def not_confirm_handler(call: CallbackQuery, state: FSMContext):
     await get_payments_plans_menu(call=call, state=state)
 
 
-@router.callback_query(F.data.startswith("self_buy_"))
+@router.callback_query(F.data == "self_buy_turn_on")
+async def turn_on_self_buy(call: CallbackQuery):
+    sub_service = SubscribeService()
+    await sub_service.switch_on_self_buy(call.message.chat.id)
+    buttons = get_back_to_plans()
+    await call.message.edit_text(
+        text="Тариф будет продлеваться атоматически, ты влюбое время можешь выключить эту функцию",
+        reply_markup=buttons)
+
+
+"""@router.callback_query(F.data.startswith("self_buy_"))
 async def switch_self_buy(call: CallbackQuery):
-    wishful_position = call.data.split("_")[2]
+    wishful_position = call.data.split("_")[2]"""

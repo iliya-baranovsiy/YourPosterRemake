@@ -1,5 +1,7 @@
+from datetime import date
 from business_logic.repositories.user_repository import UserRepository
 from business_logic.repositories.cache_repository import UserCacheRepository
+from business_logic.entities.user_entity import User
 
 
 class UserService:
@@ -27,3 +29,7 @@ class UserService:
         if user_data:
             await self.cache.add_lost_user_cache(user_data)
             return user_data
+
+    async def update_user(self, user: User):
+        await self.cache.update_user_cache(user=user)
+        await self.repo.update(user=user, start_date=date.today())

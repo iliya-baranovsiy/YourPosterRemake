@@ -22,9 +22,3 @@ class Subscription:
             format_date = datetime.strptime(str(self.end_date_row), "%Y-%m-%d").strftime("%d.%m.%Y")
             return format_date
         return "Бессрочно"
-
-
-@dataclass
-class DescriptionStatus:
-    status: Status
-    action: Action

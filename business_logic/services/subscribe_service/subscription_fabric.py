@@ -3,16 +3,14 @@ from abc import ABC, abstractmethod
 from ..subscribe_service.options import Action, ActionData
 from database.payments.options import PLAN_INFO, PaymentOptions
 from business_logic.entities.user_entity import User
-from business_logic.repositories.user_repository import UserRepository
-from business_logic.repositories.cache_repository import UserCacheRepository
+from business_logic.services.user_service import UserService
 from datetime import date, timedelta
 from exceptions.cash_exception import UserCashException
 
 
 class BaseSubFabric(ABC):
     def __init__(self):
-        self.repo = UserRepository()
-        self.cache = UserCacheRepository()
+        self.user_service = UserService()
 
     @abstractmethod
     async def get_confirmation_text(self, new_plan: PaymentOptions):
@@ -27,8 +25,7 @@ class BaseSubFabric(ABC):
         if user.balance < 0:
             raise UserCashException(user_id=user.tg_id, balance=user.balance)
         else:
-            await self.repo.update(user=user, start_date=date.today())
-            await self.cache.update_user_cache(user=user)
+            await self.user_service.update_user(user)
 
 
 class Buy(BaseSubFabric):
@@ -68,6 +65,7 @@ class Upgrade(BaseSubFabric):
         user.subscription.payment_plan = new_plan
         user.subscription.priority = PLAN_INFO[new_plan].priority
         user.subscription.end_date_row = date.today() + timedelta(days=31)
+        user.automatic_buy =False
         await self.withdraw(user, new_plan)
 
 
@@ -81,8 +79,7 @@ class Downgrade(BaseSubFabric):
     async def execute(self, user, new_plan):
         user.automatic_buy = True
         user.subscription.pending_plan = new_plan
-        await self.repo.update(user=user, start_date=date.today())
-        await self.cache.update_user_cache(user=user)
+        await self.user_service.update_user(user)
 
 
 class SubscriptionFabric:

@@ -3,7 +3,7 @@ from .options import Action, ActionData
 from business_logic.services.user_service import UserService
 from .subscription_fabric import SubscriptionFabric
 from business_logic.common_options.status_option import Status
-from business_logic.entities.payment_plan_entity import DescriptionStatus
+from business_logic.common_options.status_option import DescriptionStatus
 
 
 class SubscribeService:
@@ -51,3 +51,8 @@ class SubscribeService:
             return Status.OK
         except Exception as e:
             return Status.BAD
+
+    async def switch_on_self_buy(self, tg_id: int):
+        user = await self._user_service.get_user(tg_id=tg_id)
+        user.automatic_buy = True
+        await self._user_service.update_user(user)
