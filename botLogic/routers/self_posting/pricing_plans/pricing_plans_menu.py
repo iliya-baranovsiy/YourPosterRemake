@@ -47,6 +47,7 @@ async def confirm_handler(call: CallbackQuery, state: FSMContext):
     await clean_state(state)
     subscribe_service = SubscribeService()
     status = await subscribe_service.change_payment_plan(new_plan=new_plan, action=action, tg_id=call.message.chat.id)
+
     if status == Status.OK:
         buttons = get_back_to_plans()
         await call.message.edit_text("Успех", reply_markup=buttons)

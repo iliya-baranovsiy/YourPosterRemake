@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import date, datetime
 from database.payments.options import PaymentOptions
+from ..common_options.status_option import Status
+from ..services.subscribe_service.options import Action
 
 
 @dataclass
@@ -20,3 +22,9 @@ class Subscription:
             format_date = datetime.strptime(str(self.end_date_row), "%Y-%m-%d").strftime("%d.%m.%Y")
             return format_date
         return "Бессрочно"
+
+
+@dataclass
+class DescriptionStatus:
+    status: Status
+    action: Action
