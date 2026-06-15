@@ -65,7 +65,7 @@ class Upgrade(BaseSubFabric):
         user.subscription.payment_plan = new_plan
         user.subscription.priority = PLAN_INFO[new_plan].priority
         user.subscription.end_date_row = date.today() + timedelta(days=31)
-        user.automatic_buy =False
+        user.automatic_buy = False
         await self.withdraw(user, new_plan)
 
 

@@ -56,3 +56,20 @@ class SubscribeService:
         user = await self._user_service.get_user(tg_id=tg_id)
         user.automatic_buy = True
         await self._user_service.update_user(user)
+
+    async def switch_off_self_buy(self, tg_id: int):
+        user = await self._user_service.get_user(tg_id=tg_id)
+        user.automatic_buy = False
+        await self._user_service.update_user(user)
+
+    async def switch_self_buy(self, tg_id: int, pending_operation):
+        if pending_operation == "on":
+            await self.switch_on_self_buy(tg_id=tg_id)
+        else:
+            await self.switch_off_self_buy(tg_id=tg_id)
+
+    async def cancel_movement(self, tg_id: int):
+        user = await self._user_service.get_user(tg_id=tg_id)
+        user.subscription.pending_plan = PaymentOptions.STANDART
+        user.automatic_buy = False
+        await self._user_service.update_user(user=user)

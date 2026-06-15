@@ -3,8 +3,7 @@ from aiogram.types.callback_query import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from business_logic.services.user_service import UserService
-from business_logic.common_options.status_option import Status
-from .function_tools.texts import get_pricing_plan_text, get_un_success_text, get_result_answer
+from .function_tools.texts import get_pricing_plan_text, get_result_answer
 from .keyboards.plans_kb import get_plans_kb, get_back_to_plans
 from business_logic.services.subscribe_service.subscribe_service import SubscribeService
 from .keyboards.confirm_pay_kb import get_confirm_kb
@@ -19,7 +18,7 @@ async def get_payments_plans_menu(call: CallbackQuery, state: FSMContext):
     user_service = UserService()
     user = await user_service.get_user(call.message.chat.id)
     text = get_pricing_plan_text(user)
-    buttons = get_plans_kb(user.automatic_buy)
+    buttons = get_plans_kb(user=user)
     await call.message.edit_text("Меню тарифов, твои текущие данные:\n" + text, reply_markup=buttons)
 
 
@@ -66,6 +65,17 @@ async def turn_on_self_buy(call: CallbackQuery):
         reply_markup=buttons)
 
 
-"""@router.callback_query(F.data.startswith("self_buy_"))
-async def switch_self_buy(call: CallbackQuery):
-    wishful_position = call.data.split("_")[2]"""
+@router.callback_query(F.data.startswith("menu_self_buy_"))
+async def switch_self_buy(call: CallbackQuery, state: FSMContext):
+    wishful_position = call.data.split("_")[3]
+    sub_service = SubscribeService()
+    await sub_service.switch_self_buy(tg_id=call.message.chat.id, pending_operation=wishful_position)
+    await get_payments_plans_menu(state=state, call=call)
+
+
+@router.callback_query(F.data == "cancel_movement")
+async def cancel_movement(call: CallbackQuery, state: FSMContext):
+    sub_service = SubscribeService()
+    await sub_service.cancel_movement(call.message.chat.id)
+    await call.answer(text="Переход отменен")
+    await get_payments_plans_menu(call=call, state=state)

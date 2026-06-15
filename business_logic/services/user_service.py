@@ -31,5 +31,5 @@ class UserService:
             return user_data
 
     async def update_user(self, user: User):
-        await self.cache.update_user_cache(user=user)
         await self.repo.update(user=user, start_date=date.today())
+        await self.cache.update_user_cache(user=user)

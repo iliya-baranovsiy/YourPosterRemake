@@ -5,17 +5,15 @@ from business_logic.common_options.status_option import Status
 from ..keyboards.self_buy_question import get_self_buy_buttons
 from ..keyboards.plans_kb import get_back_to_plans
 from ..entities.answer_entity import Answer
+from database.payments.options import PaymentOptions
 
 
 def get_pricing_plan_text(user: User) -> str:
     text = (f"<b>Тариф:</b> {user.subscription.payment_plan_str}\n"
             f"<b>Действует по:</b> {user.subscription.end_date}\n"
-            f"<b>Баланс:</b> {user.balance}")
-    return text
-
-
-def get_un_success_text() -> str:
-    text = "Упс, что-то пошло не так, проверь средства на балансе и попробуй заново"
+            f"<b>Баланс:</b> {user.balance}\n")
+    if user.subscription.pending_plan != user.subscription.payment_plan and user.subscription.pending_plan != PaymentOptions.STANDART:
+        text += f"<b>Запланирован переход к тарифу {user.subscription.pending_plan.value}</b>"
     return text
 
 
