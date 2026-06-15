@@ -16,7 +16,7 @@ class UserCacheRepository:
                                 balance: float = 0.0,
                                 automatic_buy: bool = False,
                                 end_date: str | None = None, priority: int = 0,
-                                pending_plan: PaymentOptions = PaymentOptions.STANDART.value):
+                                pending_plan: str = PaymentOptions.STANDART.value):
         await self.cache.add_cache(tg_id=tg_id,
                                    username=username,
                                    payment_plan=payment_plan,
@@ -62,5 +62,5 @@ class UserCacheRepository:
                                      automatic_buy=user.automatic_buy,
                                      end_date=str(
                                          user.subscription.end_date_row) if user.subscription.end_date_row else None,
-                                     pending_plan=user.subscription.pending_plan,
+                                     pending_plan=user.subscription.pending_plan.value,
                                      priority=user.subscription.priority)
