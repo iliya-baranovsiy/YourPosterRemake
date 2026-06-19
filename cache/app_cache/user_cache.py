@@ -25,12 +25,12 @@ class UserCache:
                 "pending_plan": pending_plan,
                 "priority": priority,
             }
-            await redis.hset(self.cache_name, tg_id, json.dumps(json_data))
+            await redis.hset(self.cache_name, str(tg_id), json.dumps(json_data))
 
-    async def get_cache(self, tg_id):
+    async def get_cache(self, tg_id: int):
         async with redis_engine as redis:
-            cache = await redis.hget(self.cache_name, tg_id)
-            return json.loads(cache) if cache else None
+            cache = await redis.hget(self.cache_name, str(tg_id))
+            return json.loads(cache.encode()) if cache else None
 
     async def update_cache(self,
                            tg_id: int,
@@ -50,7 +50,7 @@ class UserCache:
             existing_cache["end_date"] = end_date
             existing_cache["priority"] = priority
             existing_cache["pending_plan"] = pending_plan
-            await redis.hset(self.cache_name, tg_id, json.dumps(existing_cache))
+            await redis.hset(self.cache_name, str(tg_id), json.dumps(existing_cache))
 
     async def clear_cache(self):
         async with redis_engine as redis:

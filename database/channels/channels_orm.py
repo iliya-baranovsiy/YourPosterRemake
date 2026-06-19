@@ -12,7 +12,7 @@ class ChannelsOrm:
             query = select(ChannelsModel.channel_id, ChannelsModel.title).where(ChannelsModel.owner_id == tg_id)
             executing = await session.execute(query)
             result = executing.all()
-            return result
+            return result if result else None
 
     @staticmethod
     async def add_channel(channel_id: int,
