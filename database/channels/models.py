@@ -10,13 +10,15 @@ class ChannelsModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     channel_id: Mapped[int] = mapped_column(BigInteger, unique=True)
-    title: Mapped[str]
+    title: Mapped[str] = mapped_column(default="Undefined")
     owner_id: Mapped[int] = mapped_column(ForeignKey("Users.tg_id"))
     posts_count: Mapped[int] = mapped_column(default=0)
+
     owner: Mapped["UserModel"] = relationship("UserModel", back_populates="channels")
     channel_settings: Mapped[list["ChannelsSettingsModel"]] = relationship("ChannelsSettingsModel",
                                                                            back_populates="channel")
     times: Mapped[list["PostsTimesModel"]] = relationship("PostsTimesModel", back_populates="channel")
+
     __table_args__ = (Index("channels_index", "channel_id", "owner_id"),)
 
 
@@ -25,7 +27,6 @@ class ChannelsSettingsModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     channel_id: Mapped[int] = mapped_column(ForeignKey("Channels.channel_id"), unique=True)
-    channel_name: Mapped[str] = mapped_column(default="Undefined")
     posts_available_count: Mapped[int] = mapped_column(default=2)
     posts_count: Mapped[int] = mapped_column(default=0)
     theme: Mapped[PostTheme] = mapped_column(Enum(PostTheme),
@@ -35,6 +36,7 @@ class ChannelsSettingsModel(Base):
     resource: Mapped[Resource] = mapped_column(Enum(Resource),
                                                default=Resource.DATABASE,
                                                server_default=text("'DATABASE'"))
+
     channel: Mapped["ChannelsModel"] = relationship("ChannelsModel", back_populates="channel_settings")
 
 

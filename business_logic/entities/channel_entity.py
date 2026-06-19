@@ -4,11 +4,17 @@ from business_logic.services.channels_service.options.options import Resource, P
 
 
 @dataclass
+class BaseChannelInfo:
+    channel_id: int
+    channel_name: str
+
+
+@dataclass
 class UserChannelsInfo:
     tg_id: int
     payment_plan: PaymentOptions
     channels_count: int
-    channels: dict
+    channels: list[BaseChannelInfo]
 
     @property
     def payment_plan_str(self):

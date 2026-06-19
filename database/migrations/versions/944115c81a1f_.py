@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 49dd6caf79f4
+Revision ID: 944115c81a1f
 Revises: 
-Create Date: 2026-06-19 13:23:54.573420
+Create Date: 2026-06-19 13:29:07.753149
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '49dd6caf79f4'
+revision: str = '944115c81a1f'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -146,7 +146,6 @@ def upgrade() -> None:
     op.create_table('ChannelsSettings',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('channel_id', sa.BigInteger(), nullable=False),
-    sa.Column('channel_name', sa.String(), nullable=False),
     sa.Column('posts_available_count', sa.Integer(), nullable=False),
     sa.Column('posts_count', sa.Integer(), nullable=False),
     sa.Column('theme', sa.Enum('AI_NEWS', 'CRYPTO_NEWS', 'GAMES_NEWS', 'IT_NEWS', 'SCIENCE_NEWS', 'SHOW_BIS_NEWS', 'SPORT_NEWS', 'WORLD_NEWS', 'OWN_FILE', 'AI_POSTS', 'UNDEFINED', name='posttheme'), server_default=sa.text("'UNDEFINED'"), nullable=False),
