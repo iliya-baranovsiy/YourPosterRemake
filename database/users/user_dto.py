@@ -12,3 +12,7 @@ class UserDto(BaseModel):
     end_date: date | None
     priority: int
     pending_plan: PaymentOptions
+
+
+class OnlyPaymentPlanDto(BaseModel):
+    payment_plan: PaymentOptions

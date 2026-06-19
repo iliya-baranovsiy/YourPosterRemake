@@ -64,3 +64,7 @@ class UserCacheRepository:
                                          user.subscription.end_date_row) if user.subscription.end_date_row else None,
                                      pending_plan=user.subscription.pending_plan.value,
                                      priority=user.subscription.priority)
+
+    async def get_only_payment_plan_cache(self, tg_id: int):
+        cache_data = await self.cache.get_only_payment_plan_cache(tg_id=tg_id)
+        return PaymentOptions(cache_data) if cache_data else None

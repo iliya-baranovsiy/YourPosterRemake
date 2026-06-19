@@ -1,7 +1,8 @@
 from datetime import date
 from business_logic.repositories.user_repository import UserRepository
-from business_logic.repositories.cache_repository import UserCacheRepository
+from business_logic.repositories.user_cache_repository import UserCacheRepository
 from business_logic.entities.user_entity import User
+from database.payments.options import PaymentOptions
 
 
 class UserService:
@@ -33,3 +34,11 @@ class UserService:
     async def update_user(self, user: User):
         await self.repo.update(user=user, start_date=date.today())
         await self.cache.update_user_cache(user=user)
+
+    async def get_only_payment_plan(self, tg_id) -> PaymentOptions:
+        data_in_cache = await self.cache.get_only_payment_plan_cache(tg_id=tg_id)
+        if data_in_cache:
+            return data_in_cache
+        data_in_db = await self.repo.get_only_payment_plan(tg_id=tg_id)
+        if data_in_db:
+            return data_in_db

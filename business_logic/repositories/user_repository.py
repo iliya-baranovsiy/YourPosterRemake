@@ -13,10 +13,14 @@ class UserRepository:
     async def get_record(self, tg_id):
         user_data = await self.orm.get_user(tg_id)
         if user_data:
-            return User(tg_id=tg_id, username=user_data.username, balance=user_data.balance,
+            return User(tg_id=tg_id, username=user_data.username,
+                        balance=user_data.balance,
                         automatic_buy=user_data.automatic_buy,
-                        subscription=Subscription(payment_plan=user_data.payment_plan, end_date_row=user_data.end_date,
-                                                  priority=user_data.priority, pending_plan=user_data.pending_plan)
+                        subscription=Subscription(
+                            payment_plan=user_data.payment_plan,
+                            end_date_row=user_data.end_date,
+                            priority=user_data.priority,
+                            pending_plan=user_data.pending_plan)
                         )
         return None
 
@@ -29,3 +33,7 @@ class UserRepository:
                                         priority=user.subscription.priority,
                                         activate_date=start_date,
                                         end_date=user.subscription.end_date_row)
+
+    async def get_only_payment_plan(self, tg_id):
+        data = await self.orm.get_only_payment_plan(tg_id=tg_id)
+        return data.payment_plan if data else None

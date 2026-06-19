@@ -55,3 +55,7 @@ class UserCache:
     async def clear_cache(self):
         async with redis_engine as redis:
             await redis.delete(self.cache_name)
+
+    async def get_only_payment_plan_cache(self, tg_id: int):
+        data = await self.get_cache(tg_id=tg_id)
+        return data["payment_plan"] if data else None
