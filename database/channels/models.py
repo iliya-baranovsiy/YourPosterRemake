@@ -14,9 +14,9 @@ class ChannelsModel(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("Users.tg_id"))
     posts_count: Mapped[int] = mapped_column(default=0)
     owner: Mapped["UserModel"] = relationship("UserModel", back_populates="channels")
-    channel_settings: Mapped[list["ChannelsSettingsModel"]] = relationship("ChannelsSettings",
+    channel_settings: Mapped[list["ChannelsSettingsModel"]] = relationship("ChannelsSettingsModel",
                                                                            back_populates="channel")
-    time: Mapped[list["PostsTimesModel"]] = relationship("PostsTimes", back_populates="channel")
+    times: Mapped[list["PostsTimesModel"]] = relationship("PostsTimesModel", back_populates="channel")
     __table_args__ = (Index("channels_index", "channel_id", "owner_id"),)
 
 
@@ -45,4 +45,4 @@ class PostsTimesModel(Base):
     channel_id: Mapped[int] = mapped_column(ForeignKey("Channels.channel_id"))
     time: Mapped[time] = mapped_column(Time)
 
-    channel: Mapped["ChannelsModel"] = relationship("ChannelsModel", back_populates="channel_settings")
+    channel: Mapped["ChannelsModel"] = relationship("ChannelsModel", back_populates="times")
