@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: bfb2a11b4e29
+Revision ID: 597c4ec27d2f
 Revises: 
-Create Date: 2026-06-19 21:33:57.432774
+Create Date: 2026-06-20 01:28:02.826601
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'bfb2a11b4e29'
+revision: str = '597c4ec27d2f'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -151,7 +151,7 @@ def upgrade() -> None:
     sa.Column('theme', sa.Enum('AI_NEWS', 'CRYPTO_NEWS', 'GAMES_NEWS', 'IT_NEWS', 'SCIENCE_NEWS', 'SHOW_BIS_NEWS', 'SPORT_NEWS', 'WORLD_NEWS', 'OWN_FILE', 'AI_POSTS', 'UNDEFINED', name='posttheme'), server_default=sa.text("'UNDEFINED'"), nullable=False),
     sa.Column('is_active_posting', sa.Boolean(), nullable=False),
     sa.Column('resource', sa.Enum('DATABASE', 'FILE', 'AI_POSTS', name='resource'), server_default=sa.text("'DATABASE'"), nullable=False),
-    sa.ForeignKeyConstraint(['channel_id'], ['Channels.channel_id'], ),
+    sa.ForeignKeyConstraint(['channel_id'], ['Channels.channel_id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('channel_id')
     )
@@ -159,7 +159,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('channel_id', sa.BigInteger(), nullable=False),
     sa.Column('time', sa.Time(), nullable=False),
-    sa.ForeignKeyConstraint(['channel_id'], ['Channels.channel_id'], ),
+    sa.ForeignKeyConstraint(['channel_id'], ['Channels.channel_id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

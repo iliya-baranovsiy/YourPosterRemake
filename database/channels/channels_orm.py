@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete, exists
 from sqlalchemy.dialects.postgresql import insert
 from .models import ChannelsModel, ChannelsSettingsModel
 from ..engines import async_session
@@ -13,6 +13,15 @@ class ChannelsOrm:
             executing = await session.execute(query)
             result = executing.all()
             return result if result else None
+
+    @staticmethod
+    async def check_channel_existing(channel_id: int):
+        async with async_session() as session:
+            stmt = select(
+                exists().where(ChannelsModel.channel_id == channel_id)
+            )
+            result = await session.execute(stmt)
+            return result.scalar()
 
     @staticmethod
     async def add_channel(channel_id: int,
@@ -33,3 +42,11 @@ class ChannelsOrm:
             async with session.begin():
                 await session.execute(unique_channel)
                 await session.execute(unique_insert_channel_settings)
+
+    @staticmethod
+    async def delete_channel(channel_id: int):
+        async with async_session() as session:
+            await session.execute(
+                delete(ChannelsModel).where(ChannelsModel.channel_id == channel_id)
+            )
+            await session.commit()

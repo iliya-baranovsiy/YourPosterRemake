@@ -29,6 +29,6 @@ class ChannelSettings:
     posts_available_count: int
     posts_count: int
     theme: PostTheme
-    time: list
+    time: list | None
     posting_is_active: bool
     resource: Resource
