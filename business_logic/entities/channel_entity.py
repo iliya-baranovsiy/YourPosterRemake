@@ -14,6 +14,7 @@ class UserChannelsInfo:
     owner_id: int
     payment_plan: PaymentOptions
     channels_count: int
+    channels_available_count: int
     channels: list[BaseChannelInfo]
 
     @property

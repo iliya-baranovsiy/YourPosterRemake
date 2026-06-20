@@ -4,6 +4,7 @@ from business_logic.services.user_service import UserService
 from business_logic.repositories.channels_db_repository import ChannelsDbRepository
 from business_logic.repositories.channels_cache_repository import ChannelsCacheRepository
 from business_logic.entities.channel_entity import UserChannelsInfo
+from database.payments.options import PLAN_INFO
 
 
 class ChannelsService:
@@ -24,7 +25,7 @@ class ChannelsService:
         await self.channel_repo.add_channel(channel_id=channel_id, channel_name=channel_name, owner_id=owner_id)
         await self.channel_cache_repo.add_channel(channel_id=channel_id, owner_id=owner_id, channel_name=channel_name)
 
-    async def get_channels(self, owner_id: int):
+    async def get_channels(self, owner_id: int) -> UserChannelsInfo:
         payment_plan, channels = await asyncio.gather(
             self.user_rep.get_only_payment_plan(tg_id=owner_id),
             self.channel_cache_repo.get_user_channels(owner_id=owner_id)
@@ -39,8 +40,15 @@ class ChannelsService:
         return UserChannelsInfo(owner_id=owner_id,
                                 payment_plan=payment_plan,
                                 channels_count=len(channels),
+                                channels_available_count=PLAN_INFO[payment_plan].channels_count,
                                 channels=channels)
 
     async def delete_channel(self, channel_id: int, owner_id: int):
         await self.channel_repo.delete_channel(channel_id=channel_id)
         await self.channel_cache_repo.delete_channel(channel_id=channel_id, owner_id=owner_id)
+
+    async def check_existing(self, channel_id: int):
+        is_exist = await self.channel_cache_repo.check_existing(channel_id=channel_id)
+        if not is_exist:
+            is_exist = await self.channel_repo.check_channel_existing(channel_id=channel_id)
+        return is_exist
