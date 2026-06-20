@@ -11,7 +11,7 @@ class BaseChannelInfo:
 
 @dataclass
 class UserChannelsInfo:
-    tg_id: int
+    owner_id: int
     payment_plan: PaymentOptions
     channels_count: int
     channels: list[BaseChannelInfo]

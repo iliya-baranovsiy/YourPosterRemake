@@ -69,3 +69,14 @@ class ChannelsCache:
 
                 if cursor == 0:
                     break
+            while True:
+                cursor, keys = await redis.scan(
+                    cursor=cursor,
+                    match=f"{self.channel_index}:*"
+                )
+
+                if keys:
+                    await redis.delete(*keys)
+
+                if cursor == 0:
+                    break

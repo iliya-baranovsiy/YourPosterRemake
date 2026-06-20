@@ -30,14 +30,14 @@ class ChannelsCacheRepository:
             resource=resource
         )
 
-    async def get_user_channels(self, owner_id: int) -> list | None:
+    async def get_user_channels(self, owner_id: int) -> list:
         data = await self.channels_cache.get_user_channels(owner_id=owner_id)
         if data:
             result = []
             for key, value in data.items():
                 result.append(BaseChannelInfo(channel_id=int(key), channel_name=value))
             return result
-        return None
+        return []
 
     async def check_existing(self, channel_id: int) -> bool:
         existing = await self.channels_cache.check_channel_existing(channel_id=channel_id)

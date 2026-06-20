@@ -1,6 +1,9 @@
+import asyncio
+
 from business_logic.services.user_service import UserService
 from business_logic.repositories.channels_db_repository import ChannelsDbRepository
 from business_logic.repositories.channels_cache_repository import ChannelsCacheRepository
+from business_logic.entities.channel_entity import UserChannelsInfo
 
 
 class ChannelsService:
@@ -21,15 +24,19 @@ class ChannelsService:
         await self.channel_cache_repo.add_channel(channel_id=channel_id, owner_id=owner_id, channel_name=channel_name)
 
     async def get_channels(self, owner_id: int):
-        channels_in_cache = await self.channel_cache_repo.get_user_channels(owner_id=owner_id)
-        if channels_in_cache:
-            return channels_in_cache
-        channels_in_db = await self.channel_repo.get_channels(owner_id=owner_id)
-        if channels_in_db:
-            # add lost cache
-            return channels_in_db
-        else:
-            return None
+        payment_plan, channels = await asyncio.gather(
+            self.user_rep.get_only_payment_plan(tg_id=owner_id),
+            self.channel_cache_repo.get_user_channels(owner_id=owner_id)
+        )
+        if not channels:
+            channels = await self.channel_repo.get_channels(owner_id=owner_id)
+            if channels:
+                # add lost cache
+                pass
+        return UserChannelsInfo(owner_id=owner_id,
+                                payment_plan=payment_plan,
+                                channels_count=len(channels),
+                                channels=channels)
 
     async def delete_channel(self, channel_id: int, owner_id: int):
         await self.channel_repo.delete_channel(channel_id=channel_id)
