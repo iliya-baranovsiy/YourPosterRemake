@@ -18,7 +18,8 @@ class ChannelsService:
             return
         channel_in_db = await self.channel_repo.check_channel_existing(channel_id=channel_id)
         if channel_in_db:
-            # add lost cache
+            await self.channel_cache_repo.add_lost_cache(channel_id=channel_id, owner_id=owner_id,
+                                                         channel_name=channel_name)
             return
         await self.channel_repo.add_channel(channel_id=channel_id, channel_name=channel_name, owner_id=owner_id)
         await self.channel_cache_repo.add_channel(channel_id=channel_id, owner_id=owner_id, channel_name=channel_name)
@@ -31,7 +32,9 @@ class ChannelsService:
         if not channels:
             channels = await self.channel_repo.get_channels(owner_id=owner_id)
             if channels:
-                # add lost cache
+                for i in channels:
+                    await self.channel_cache_repo.add_lost_cache(owner_id=owner_id, channel_id=i.channel_id,
+                                                                 channel_name=i.channel_name)
                 pass
         return UserChannelsInfo(owner_id=owner_id,
                                 payment_plan=payment_plan,

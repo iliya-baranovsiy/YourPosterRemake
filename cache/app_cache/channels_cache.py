@@ -11,13 +11,21 @@ class ChannelsCache:
     async def add_channel(self,
                           channel_id: int,
                           owner_id: int,
-                          channel_name: str,
-                          posts_available_count: int,
-                          posts_count: int,
-                          theme: str,
-                          time: list | None,
-                          posting_is_active: bool,
-                          resource: str):
+                          channel_name: str):
+        async with redis_engine as redis:
+            await redis.hset(f"{self.channels_namespace}:{owner_id}", channel_id, channel_name)
+            await redis.set(f"{self.channel_index}:{channel_id}", owner_id)
+
+    async def add_channel_settings(self,
+                                   channel_id: int,
+                                   channel_name: str,
+                                   posts_available_count: int,
+                                   posts_count: int,
+                                   theme: str,
+                                   time: list | None,
+                                   posting_is_active: bool,
+                                   resource: str
+                                   ):
         data = {
             "channel_name": channel_name,
             "posts_available_count": posts_available_count,
@@ -28,9 +36,7 @@ class ChannelsCache:
             "resource": resource
         }
         async with redis_engine as redis:
-            await redis.hset(f"{self.channels_namespace}:{owner_id}", channel_id, channel_name)
             await redis.hset(self.channels_settings_namespace, str(channel_id), json.dumps(data))
-            await redis.set(f"{self.channel_index}:{channel_id}", owner_id)
 
     async def get_user_channels(self, owner_id: int):
         async with redis_engine as redis:
