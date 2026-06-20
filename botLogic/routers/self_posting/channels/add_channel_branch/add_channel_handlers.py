@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 
 from .states.post_waiting import WaitPostOrId
-from .functions_tools.add_channel_logic import AddTgChannelFacade
+from business_logic.services.channels_service.add_channel_facade import AddTgChannelFacade
 from .keyboards.keyboard import get_back_button
 
 router = Router(name=__name__)

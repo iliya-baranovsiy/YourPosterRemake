@@ -1,7 +1,7 @@
 from aiogram.types import Chat
 from aiogram.enums import ChatType, ChatMemberStatus
 
-from business_logic.services.channels_service.channels_service import ChannelsService
+from .channels_service import ChannelsService
 from botLogic.bot_services.bot_instance import bot
 
 
