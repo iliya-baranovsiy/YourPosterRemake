@@ -13,7 +13,6 @@ class ChannelsModel(Base):
     channel_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     title: Mapped[str] = mapped_column(default="Undefined")
     owner_id: Mapped[int] = mapped_column(ForeignKey("Users.tg_id"))
-    posts_count: Mapped[int] = mapped_column(default=0)
 
     owner: Mapped["UserModel"] = relationship("UserModel", back_populates="channels")
     channel_settings: Mapped[list["ChannelsSettingsModel"]] = relationship("ChannelsSettingsModel",
