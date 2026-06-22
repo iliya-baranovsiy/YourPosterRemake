@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.payments.options import PaymentOptions
+from business_logic.services.channels_service.options.options import PostTheme
 
 
 class SettingsKbBuilder:
@@ -27,11 +28,12 @@ class SettingsKbBuilder:
 
 
 class SettingsKb:
-    def __init__(self, channel_id: int, payment_plan: PaymentOptions, is_active: bool):
+    def __init__(self, channel_id: int, payment_plan: PaymentOptions, is_active: bool, theme: PostTheme):
         self.channel_id = channel_id
         self.builder = SettingsKbBuilder(channel_id=self.channel_id)
         self.payment_plan = payment_plan
         self.is_active = is_active
+        self.theme = theme
 
     def get_kb(self):
         if self.payment_plan == PaymentOptions.STANDART:
@@ -40,9 +42,11 @@ class SettingsKb:
     def get_kb_for_standard(self) -> list:
         self.builder.create_theme_button()
         self.builder.create_posts_time_button()
-        if self.is_active:
-            self.builder.create_deactivate_button()
-        else:
-            self.builder.create_activate_button()
+        if self.theme != PostTheme.UNDEFINED:
+            if self.is_active:
+                self.builder.create_deactivate_button()
+            else:
+                self.builder.create_activate_button()
         self.builder.create_back_button()
+        print(self.builder.kb)
         return self.builder.kb

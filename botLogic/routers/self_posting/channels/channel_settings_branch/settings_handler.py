@@ -18,7 +18,8 @@ async def settings_menu_handler(call: CallbackQuery):
     user_service = UserService()
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)
     channel_data = await channel_service.get_channel_settings(channel_id=channel_id)
-    kb = SettingsKb(channel_id=channel_id, payment_plan=payment_plan, is_active=channel_data.posting_is_active)
+    kb = SettingsKb(channel_id=channel_id, payment_plan=payment_plan, is_active=channel_data.posting_is_active,
+                    theme=channel_data.theme)
     text_cls = SettingsMenuText(theme=channel_data.theme,
                                 is_active=channel_data.posting_is_active,
                                 payment_plan=payment_plan,
