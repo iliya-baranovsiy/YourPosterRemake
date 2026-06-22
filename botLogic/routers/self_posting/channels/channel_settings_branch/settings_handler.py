@@ -3,8 +3,10 @@ from aiogram.types import CallbackQuery
 
 from business_logic.services.channels_service.channel_settings_service import ChannelSettingsService
 from business_logic.services.user_service import UserService
+from business_logic.entities.channel_entity import PostTheme
 from .keyboards.settings_kb import SettingsKb
 from .function_tools.text import SettingsMenuText
+from .keyboards.theme_kb import get_theme_kb, get_back_button_to_settings
 
 router = Router(name=__name__)
 
@@ -24,3 +26,25 @@ async def settings_menu_handler(call: CallbackQuery):
     text = text_cls.get_text()
     buttons = kb.get_kb()
     await call.message.edit_text(text=text, reply_markup=buttons)
+
+
+@router.callback_query(F.data.startswith("theme"))
+async def theme_menu(call: CallbackQuery):
+    channel_id = int(call.data.split("_")[1])
+    service = ChannelSettingsService()
+    data = await service.get_channel_settings(channel_id=channel_id)
+    buttons = get_theme_kb(channel_id=channel_id, theme=data.theme)
+    await call.message.edit_text("Выбери желаемую тему поста из списка", reply_markup=buttons)
+
+
+@router.callback_query(F.data.startswith("settheme"))
+async def set_theme(call: CallbackQuery):
+    channel_service = ChannelSettingsService()
+    data = call.data.split("_")
+    channel_id = int(data[2])
+    theme = PostTheme.enum_value(kb_value=data[1])
+    channel = await channel_service.get_channel_settings(channel_id=channel_id)
+    channel.theme = theme
+    await channel_service.update_channel_settings(channel=channel)
+    buttons = get_back_button_to_settings(channel_id=channel_id)
+    await call.message.edit_text("Тема успешно установлена !", reply_markup=buttons)

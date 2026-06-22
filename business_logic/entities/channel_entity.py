@@ -25,7 +25,6 @@ class UserChannelsInfo:
 @dataclass
 class ChannelSettings:
     channel_id: int
-    # owner_id: int
     channel_name: str
     posts_available_count: int
     posts_count: int

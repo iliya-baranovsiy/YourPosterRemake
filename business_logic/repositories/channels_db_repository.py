@@ -34,8 +34,15 @@ class ChannelsDbRepository:
         existing = await self.channels_orm.check_channel_existing(channel_id=channel_id)
         return existing
 
-    async def update_channel_settings(self):
-        pass
+    async def update_channel_settings(self, channel: ChannelSettings):
+        await self.channels_orm.update_channel_settings(
+            channel_id=channel.channel_id,
+            posts_available_count=channel.posts_available_count,
+            posts_count=channel.posts_count,
+            theme=channel.theme,
+            is_active_posting=channel.posting_is_active,
+            resource=channel.resource
+        )
 
     async def delete_channel(self, channel_id: int):
         await self.channels_orm.delete_channel(channel_id=channel_id)

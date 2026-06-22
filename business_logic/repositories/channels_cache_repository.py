@@ -22,18 +22,18 @@ class ChannelsCacheRepository:
                                    time: list[str] | None = None,
                                    posts_available_count: int = PLAN_INFO[PaymentOptions.STANDART].posts_count,
                                    posts_count: int = 0,
-                                   theme: PostTheme = PostTheme.UNDEFINED.value,
+                                   theme: PostTheme = PostTheme.UNDEFINED,
                                    posting_is_active: bool = False,
-                                   resource: Resource = Resource.DATABASE.value):
+                                   resource: Resource = Resource.DATABASE):
         await self.channels_cache.add_channel_settings(
             channel_id=channel_id,
             channel_name=channel_name,
             posts_available_count=posts_available_count,
             posts_count=posts_count,
-            theme=theme,
+            theme=theme.value,
             time=time,
             posting_is_active=posting_is_active,
-            resource=resource)
+            resource=resource.value)
 
     async def get_user_channels(self, owner_id: int) -> list:
         data = await self.channels_cache.get_user_channels(owner_id=owner_id)
@@ -58,6 +58,18 @@ class ChannelsCacheRepository:
                                        )
             return settings
         return None
+
+    async def update_settings_cache(self, channel: ChannelSettings):
+        await self.add_channel_settings(
+            channel_id=channel.channel_id,
+            channel_name=channel.channel_name,
+            posts_available_count=channel.posts_available_count,
+            posts_count=channel.posts_count,
+            theme=channel.theme,
+            posting_is_active=channel.posting_is_active,
+            resource=channel.resource,
+            time=channel.time
+        )
 
     async def check_existing(self, channel_id: int) -> bool:
         existing = await self.channels_cache.check_channel_existing(channel_id=channel_id)

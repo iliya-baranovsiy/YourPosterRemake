@@ -1,9 +1,10 @@
 import asyncio
-from sqlalchemy import select, delete, exists
+from sqlalchemy import select, delete, exists, update
 from sqlalchemy.dialects.postgresql import insert
 from .models import ChannelsModel, ChannelsSettingsModel, PostsTimesModel
 from ..engines import async_session
 from .schemas import ChannelSettingsDto
+from business_logic.services.channels_service.options.options import PostTheme, Resource
 
 
 class ChannelsOrm:
@@ -89,3 +90,17 @@ class ChannelsOrm:
                 delete(ChannelsModel).where(ChannelsModel.channel_id == channel_id)
             )
             await session.commit()
+
+    @staticmethod
+    async def update_channel_settings(channel_id: int, posts_available_count: int, posts_count: int, theme: PostTheme,
+                                      is_active_posting: bool, resource: Resource):
+        async with async_session() as session:
+            stmt = update(ChannelsSettingsModel).values(
+                posts_available_count=posts_available_count,
+                posts_count=posts_count,
+                theme=theme,
+                is_active_posting=is_active_posting,
+                resource=resource
+            ).where(ChannelsSettingsModel.channel_id == channel_id)
+            async with session.begin():
+                await session.execute(stmt)

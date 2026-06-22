@@ -1,5 +1,6 @@
 from business_logic.repositories.channels_db_repository import ChannelsDbRepository
 from business_logic.repositories.channels_cache_repository import ChannelsCacheRepository
+from business_logic.entities.channel_entity import ChannelSettings
 
 
 class ChannelSettingsService:
@@ -19,3 +20,7 @@ class ChannelSettingsService:
                                                       posts_count=settings.posts_count,
                                                       posts_available_count=settings.posts_available_count)
         return settings
+
+    async def update_channel_settings(self, channel: ChannelSettings):
+        await self.db_rep.update_channel_settings(channel=channel)
+        await self.cache.update_settings_cache(channel=channel)
