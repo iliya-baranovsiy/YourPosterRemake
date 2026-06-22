@@ -1,5 +1,5 @@
 from cache.app_cache.channels_cache import ChannelsCache
-from business_logic.entities.channel_entity import PostTheme, Resource, BaseChannelInfo
+from business_logic.entities.channel_entity import PostTheme, Resource, BaseChannelInfo, ChannelSettings
 from database.payments.options import PaymentOptions, PLAN_INFO
 
 
@@ -43,6 +43,21 @@ class ChannelsCacheRepository:
                 result.append(BaseChannelInfo(channel_id=int(key), channel_name=value))
             return result
         return []
+
+    async def get_channel_settings(self, channel_id: int):
+        data = await self.channels_cache.get_channel_settings(channel_id=channel_id)
+        if data:
+            settings = ChannelSettings(channel_id=channel_id,
+                                       channel_name=data["channel_name"],
+                                       posts_count=data["posts_count"],
+                                       posts_available_count=data["posts_available_count"],
+                                       theme=PostTheme(data["theme"]),
+                                       resource=Resource(data["resource"]),
+                                       time=data["time"],
+                                       posting_is_active=data["posting_is_active"]
+                                       )
+            return settings
+        return None
 
     async def check_existing(self, channel_id: int) -> bool:
         existing = await self.channels_cache.check_channel_existing(channel_id=channel_id)
