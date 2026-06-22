@@ -9,10 +9,3 @@ def get_request_kb_for_delete(channel_id: int) -> InlineKeyboardMarkup:
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)
-
-
-def back_button():
-    kb = [
-        [InlineKeyboardButton(text="Назад", callback_data="channels")]
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=kb)

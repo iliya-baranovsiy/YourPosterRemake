@@ -1,7 +1,9 @@
+import asyncio
 from sqlalchemy import select, delete, exists
 from sqlalchemy.dialects.postgresql import insert
-from .models import ChannelsModel, ChannelsSettingsModel
+from .models import ChannelsModel, ChannelsSettingsModel, PostsTimesModel
 from ..engines import async_session
+from .schemas import ChannelSettingsDto
 
 
 class ChannelsOrm:
@@ -13,6 +15,43 @@ class ChannelsOrm:
             executing = await session.execute(query)
             result = executing.all()
             return result if result else None
+
+    @staticmethod
+    async def get_channel_settings(channel_id: int):
+        async with async_session() as session:
+            query = (
+                select(
+                    ChannelsModel.title,
+                    ChannelsSettingsModel.posts_count,
+                    ChannelsSettingsModel.posts_available_count,
+                    ChannelsSettingsModel.theme,
+                    ChannelsSettingsModel.resource,
+                    ChannelsSettingsModel.is_active_posting,
+                )
+                .select_from(ChannelsModel)
+                .join(
+                    ChannelsSettingsModel,
+                    ChannelsSettingsModel.channel_id == ChannelsModel.channel_id
+                )
+                .where(ChannelsModel.channel_id == channel_id)
+            )
+            channels_times_query = select(PostsTimesModel.time).where(PostsTimesModel.channel_id == channel_id)
+
+            query_executing = await session.execute(query)
+            times_executing = await session.execute(channels_times_query)
+
+            query_result = query_executing.first()
+            times_result = times_executing.all()
+
+            dto_result = ChannelSettingsDto(post_count=query_result[1],
+                                            post_available_count=query_result[2],
+                                            post_theme=query_result[3],
+                                            posts_resource=query_result[4],
+                                            is_active_posting=query_result[5],
+                                            channel_name=query_result[0],
+                                            posts_times=times_result
+                                            )
+            return dto_result
 
     @staticmethod
     async def check_channel_existing(channel_id: int):

@@ -1,5 +1,5 @@
 from database.channels.channels_orm import ChannelsOrm
-from business_logic.entities.channel_entity import BaseChannelInfo
+from business_logic.entities.channel_entity import BaseChannelInfo, ChannelSettings
 
 
 class ChannelsDbRepository:
@@ -17,6 +17,18 @@ class ChannelsDbRepository:
                 result_list.append(BaseChannelInfo(channel_id=i[0], channel_name=i[1]))
             return result_list
         return []
+
+    async def get_channel_settings(self, channel_id: int):
+        data = await self.channels_orm.get_channel_settings(channel_id=channel_id)
+        settings = ChannelSettings(channel_id=channel_id,
+                                   channel_name=data.channel_name,
+                                   posts_count=data.post_count,
+                                   posts_available_count=data.post_available_count,
+                                   posting_is_active=data.is_active_posting,
+                                   theme=data.post_theme,
+                                   resource=data.posts_resource,
+                                   time=data.posts_times)
+        return settings
 
     async def check_channel_existing(self, channel_id: int) -> bool:
         existing = await self.channels_orm.check_channel_existing(channel_id=channel_id)
