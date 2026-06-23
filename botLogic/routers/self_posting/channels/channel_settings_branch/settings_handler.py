@@ -11,9 +11,8 @@ from .keyboards.theme_kb import get_theme_kb, get_back_button_to_settings
 router = Router(name=__name__)
 
 
-@router.callback_query(F.data.startswith("settings"))
-async def settings_menu_handler(call: CallbackQuery):
-    channel_id = int(call.data.split("_")[1])
+async def get_settings_menu(call: CallbackQuery, channel_id: int):
+    # channel_id = int(call.data.split("_")[1])
     channel_service = ChannelSettingsService()
     user_service = UserService()
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)
@@ -27,6 +26,12 @@ async def settings_menu_handler(call: CallbackQuery):
     text = text_cls.get_text()
     buttons = kb.get_kb()
     await call.message.edit_text(text=text, reply_markup=buttons)
+
+
+@router.callback_query(F.data.startswith("settings"))
+async def settings_menu_handler(call: CallbackQuery):
+    channel_id = int(call.data.split("_")[1])
+    await get_settings_menu(call=call, channel_id=channel_id)
 
 
 @router.callback_query(F.data.startswith("theme"))
@@ -49,3 +54,25 @@ async def set_theme(call: CallbackQuery):
     await channel_service.update_channel_settings(channel=channel)
     buttons = get_back_button_to_settings(channel_id=channel_id)
     await call.message.edit_text("Тема успешно установлена !", reply_markup=buttons)
+
+
+@router.callback_query(F.data.startswith("start"))
+async def activate_self_posting(call: CallbackQuery):
+    channels_set_srvice = ChannelSettingsService()
+    channel_id = int(call.data.split("_")[2])
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id)
+    channel.posting_is_active = True
+    await channels_set_srvice.update_channel_settings(channel)
+    await get_settings_menu(call=call, channel_id=channel_id)
+    await call.answer(text="Постинг активирован", show_alert=True)
+
+
+@router.callback_query(F.data.startswith("deactivate"))
+async def deactivate_self_posting(call: CallbackQuery):
+    channels_set_srvice = ChannelSettingsService()
+    channel_id = int(call.data.split("_")[2])
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id)
+    channel.posting_is_active = False
+    await channels_set_srvice.update_channel_settings(channel)
+    await get_settings_menu(call=call, channel_id=channel_id)
+    await call.answer(text="Постинг выключен", show_alert=True)

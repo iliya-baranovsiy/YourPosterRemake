@@ -77,5 +77,5 @@ async def switch_self_buy(call: CallbackQuery, state: FSMContext):
 async def cancel_movement(call: CallbackQuery, state: FSMContext):
     sub_service = SubscribeService()
     await sub_service.cancel_movement(call.message.chat.id)
-    await call.answer(text="Переход отменен")
+    await call.answer(text="Переход отменен", show_alert=True)
     await get_payments_plans_menu(call=call, state=state)
