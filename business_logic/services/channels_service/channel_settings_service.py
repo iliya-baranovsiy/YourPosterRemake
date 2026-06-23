@@ -24,3 +24,7 @@ class ChannelSettingsService:
     async def update_channel_settings(self, channel: ChannelSettings):
         await self.db_rep.update_channel_settings(channel=channel)
         await self.cache.update_settings_cache(channel=channel)
+
+    async def update_channel_time(self, channel: ChannelSettings):
+        await self.db_rep.update_channel_times(channel=channel)
+        await self.cache.update_settings_cache(channel=channel)

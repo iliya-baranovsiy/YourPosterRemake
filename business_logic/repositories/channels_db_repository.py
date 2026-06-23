@@ -44,5 +44,8 @@ class ChannelsDbRepository:
             resource=channel.resource
         )
 
+    async def update_channel_times(self, channel: ChannelSettings):
+        await self.channels_orm.update_channel_times(channel_id=channel.channel_id, times=channel.time)
+
     async def delete_channel(self, channel_id: int):
         await self.channels_orm.delete_channel(channel_id=channel_id)

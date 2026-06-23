@@ -5,6 +5,7 @@ from .models import ChannelsModel, ChannelsSettingsModel, PostsTimesModel
 from ..engines import async_session
 from .schemas import ChannelSettingsDto
 from business_logic.services.channels_service.options.options import PostTheme, Resource
+from .times_functinon import to_delete, to_insert
 
 
 class ChannelsOrm:
@@ -50,7 +51,7 @@ class ChannelsOrm:
                                             posts_resource=query_result[4],
                                             is_active_posting=query_result[5],
                                             channel_name=query_result[0],
-                                            posts_times=times_result
+                                            posts_times=[i[0] for i in times_result]
                                             )
             return dto_result
 
@@ -104,3 +105,33 @@ class ChannelsOrm:
             ).where(ChannelsSettingsModel.channel_id == channel_id)
             async with session.begin():
                 await session.execute(stmt)
+
+    async def update_channel_times(self, channel_id: int, times: list):
+        async with async_session() as session:
+            db_data = await self._get_only_channel_times(channel_id=channel_id)
+            to_del = list(to_delete(db_data=db_data, entity_data=times))
+            to_ins = list(to_insert(db_data=db_data, entity_data=times))
+            async with session.begin():
+                if to_del:
+                    await session.execute(
+                        delete(PostsTimesModel).where(
+                            PostsTimesModel.channel_id == channel_id,
+                            PostsTimesModel.time.in_(to_del)
+                        )
+                    )
+                if to_ins:
+                    await session.execute(
+                        insert(PostsTimesModel).values(
+                            channel_id=channel_id,
+                            time=to_ins[0]
+                        )
+                    )
+
+    async def _get_only_channel_times(self, channel_id: int) -> list:
+        async with async_session() as session:
+            query = select(PostsTimesModel.time).where(PostsTimesModel.channel_id == channel_id)
+            executing = await session.execute(query)
+            result = executing.all()
+            if result:
+                return [i[0] for i in result]
+            return []

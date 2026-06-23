@@ -20,7 +20,8 @@ class ChannelsModel(Base):
                                                                            passive_deletes=True)
     times: Mapped[list["PostsTimesModel"]] = relationship("PostsTimesModel",
                                                           back_populates="channel",
-                                                          passive_deletes=True)
+                                                          passive_deletes=True,
+                                                          cascade="all, delete-orphan")
 
     __table_args__ = (Index("channels_index", "channel_id", "owner_id"),)
 
@@ -48,6 +49,6 @@ class PostsTimesModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     channel_id: Mapped[int] = mapped_column(ForeignKey("Channels.channel_id", ondelete="CASCADE"))
-    time: Mapped[time] = mapped_column(Time)
+    time: Mapped[str]
 
     channel: Mapped["ChannelsModel"] = relationship("ChannelsModel", back_populates="times")

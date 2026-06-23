@@ -12,7 +12,6 @@ router = Router(name=__name__)
 
 
 async def get_settings_menu(call: CallbackQuery, channel_id: int):
-    # channel_id = int(call.data.split("_")[1])
     channel_service = ChannelSettingsService()
     user_service = UserService()
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)

@@ -48,5 +48,4 @@ class SettingsKb:
             else:
                 self.builder.create_activate_button()
         self.builder.create_back_button()
-        print(self.builder.kb)
         return self.builder.kb
