@@ -8,7 +8,7 @@ class ChannelSettingsService:
         self.cache = ChannelsCacheRepository()
         self.db_rep = ChannelsDbRepository()
 
-    async def get_channel_settings(self, channel_id: int):
+    async def get_channel_settings(self, channel_id: int) -> ChannelSettings:
         settings = await self.cache.get_channel_settings(channel_id=channel_id)
         if not settings:
             settings = await self.db_rep.get_channel_settings(channel_id=channel_id)
