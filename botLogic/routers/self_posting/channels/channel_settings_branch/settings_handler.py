@@ -20,7 +20,7 @@ async def get_settings_menu(call: CallbackQuery, channel_id: int):
     channel_service = ChannelSettingsService()
     user_service = UserService()
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)
-    channel_data = await channel_service.get_channel_settings(channel_id=channel_id)
+    channel_data = await channel_service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     kb = SettingsKb(channel_id=channel_id, payment_plan=payment_plan, is_active=channel_data.posting_is_active,
                     theme=channel_data.theme, resource=channel_data.resource)
     text_cls = SettingsMenuText(theme=channel_data.theme,
@@ -45,7 +45,7 @@ async def settings_menu_handler(call: CallbackQuery):
 async def theme_menu(call: CallbackQuery):
     channel_id = int(call.data.split("_")[1])
     service = ChannelSettingsService()
-    data = await service.get_channel_settings(channel_id=channel_id)
+    data = await service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     buttons = get_theme_kb(channel_id=channel_id, theme=data.theme)
     await call.message.edit_text("Выбери желаемую тему поста из списка", reply_markup=buttons)
 
@@ -56,7 +56,7 @@ async def set_theme(call: CallbackQuery):
     data = call.data.split("_")
     channel_id = int(data[2])
     theme = PostTheme.enum_value(kb_value=data[1])
-    channel = await channel_service.get_channel_settings(channel_id=channel_id)
+    channel = await channel_service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     channel.theme = theme
     await channel_service.update_channel_settings(channel=channel)
     buttons = get_back_button_to_settings(channel_id=channel_id)
@@ -71,7 +71,7 @@ async def set_theme(call: CallbackQuery):
 async def activate_self_posting(call: CallbackQuery):
     channels_set_srvice = ChannelSettingsService()
     channel_id = int(call.data.split("_")[2])
-    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id)
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     channel.posting_is_active = True
     await channels_set_srvice.update_channel_settings(channel)
     await get_settings_menu(call=call, channel_id=channel_id)
@@ -82,7 +82,7 @@ async def activate_self_posting(call: CallbackQuery):
 async def deactivate_self_posting(call: CallbackQuery):
     channels_set_srvice = ChannelSettingsService()
     channel_id = int(call.data.split("_")[2])
-    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id)
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     channel.posting_is_active = False
     await channels_set_srvice.update_channel_settings(channel)
     await get_settings_menu(call=call, channel_id=channel_id)
@@ -100,7 +100,7 @@ async def get_channel_times_menu(call: CallbackQuery, state: FSMContext):
     user_service = UserService()
     channel_settings_s = ChannelSettingsService()
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)
-    channel = await channel_settings_s.get_channel_settings(channel_id=channel_id)
+    channel = await channel_settings_s.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     kb = TimeKb(channel_id=channel_id, times=channel.time, payment_plan=payment_plan)
     buttons = kb.get_time_kb()
     await call.message.edit_text("Меню времени", reply_markup=buttons)
@@ -123,7 +123,7 @@ async def set_time(msg: Message, state: FSMContext):
     buttons = back_to_time_menu(channel_id=channel_id)
     if time_validator(time_):
         ch_service = ChannelSettingsService()
-        channel = await ch_service.get_channel_settings(channel_id=channel_id)
+        channel = await ch_service.get_channel_settings(channel_id=channel_id, tg_id=msg.chat.id)
         channel.time.append(time_)
         await ch_service.update_channel_time(channel)
         await state.clear()
@@ -147,7 +147,7 @@ async def drop_time_handler(call: CallbackQuery):
     channel_service = ChannelSettingsService()
     channel_id = int(call_data[1])
     time_ = call_data[2]
-    channel = await channel_service.get_channel_settings(channel_id=channel_id)
+    channel = await channel_service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     channel.time.remove(time_)
     await channel_service.update_channel_time(channel)
     buttons = back_to_time_menu(channel_id=channel_id)

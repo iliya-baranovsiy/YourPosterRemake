@@ -19,7 +19,6 @@ class ChannelsCache:
     async def add_channel_settings(self,
                                    channel_id: int,
                                    channel_name: str,
-                                   posts_available_count: int,
                                    posts_count: int,
                                    theme: str,
                                    time: list | None,
@@ -28,7 +27,6 @@ class ChannelsCache:
                                    ):
         data = {
             "channel_name": channel_name,
-            "posts_available_count": posts_available_count,
             "posts_count": posts_count,
             "theme": theme,
             "time": time,

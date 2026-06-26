@@ -1,5 +1,6 @@
 from database.channels.channels_orm import ChannelsOrm
 from business_logic.entities.channel_entity import BaseChannelInfo, ChannelSettings
+from ..entities.channel_entity import Resource
 
 
 class ChannelsDbRepository:
@@ -23,7 +24,7 @@ class ChannelsDbRepository:
         settings = ChannelSettings(channel_id=channel_id,
                                    channel_name=data.channel_name,
                                    posts_count=data.post_count,
-                                   posts_available_count=data.post_available_count,
+                                   posts_available_count=0,
                                    posting_is_active=data.is_active_posting,
                                    theme=data.post_theme,
                                    resource=data.posts_resource,
@@ -37,7 +38,6 @@ class ChannelsDbRepository:
     async def update_channel_settings(self, channel: ChannelSettings):
         await self.channels_orm.update_channel_settings(
             channel_id=channel.channel_id,
-            posts_available_count=channel.posts_available_count,
             posts_count=channel.posts_count,
             theme=channel.theme,
             is_active_posting=channel.posting_is_active,

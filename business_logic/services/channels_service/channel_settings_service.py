@@ -1,14 +1,17 @@
 from business_logic.repositories.channels_db_repository import ChannelsDbRepository
 from business_logic.repositories.channels_cache_repository import ChannelsCacheRepository
 from business_logic.entities.channel_entity import ChannelSettings
+from business_logic.services.user_service import UserService
+from database.payments.options import PLAN_INFO
 
 
 class ChannelSettingsService:
     def __init__(self):
         self.cache = ChannelsCacheRepository()
         self.db_rep = ChannelsDbRepository()
+        self.user = UserService()
 
-    async def get_channel_settings(self, channel_id: int) -> ChannelSettings:
+    async def get_channel_settings(self, channel_id: int, tg_id: int) -> ChannelSettings:
         settings = await self.cache.get_channel_settings(channel_id=channel_id)
         if not settings:
             settings = await self.db_rep.get_channel_settings(channel_id=channel_id)
@@ -18,8 +21,9 @@ class ChannelSettingsService:
                                                       time=settings.time,
                                                       theme=settings.theme,
                                                       posts_count=settings.posts_count,
-                                                      posts_available_count=settings.posts_available_count,
                                                       resource=settings.resource)
+        payment_plan = await self.user.get_only_payment_plan(tg_id=tg_id)
+        settings.posts_available_count = PLAN_INFO[payment_plan].posts_count
         return settings
 
     async def update_channel_settings(self, channel: ChannelSettings):

@@ -1,4 +1,3 @@
-import asyncio
 from sqlalchemy import select, delete, exists, update
 from sqlalchemy.dialects.postgresql import insert
 from .models import ChannelsModel, ChannelsSettingsModel, PostsTimesModel
@@ -25,7 +24,6 @@ class ChannelsOrm:
                 select(
                     ChannelsModel.title,
                     ChannelsSettingsModel.posts_count,
-                    ChannelsSettingsModel.posts_available_count,
                     ChannelsSettingsModel.theme,
                     ChannelsSettingsModel.resource,
                     ChannelsSettingsModel.is_active_posting,
@@ -46,10 +44,9 @@ class ChannelsOrm:
             times_result = times_executing.all()
 
             dto_result = ChannelSettingsDto(post_count=query_result[1],
-                                            post_available_count=query_result[2],
-                                            post_theme=query_result[3],
-                                            posts_resource=query_result[4],
-                                            is_active_posting=query_result[5],
+                                            post_theme=query_result[2],
+                                            posts_resource=query_result[3],
+                                            is_active_posting=query_result[4],
                                             channel_name=query_result[0],
                                             posts_times=[i[0] for i in times_result]
                                             )
@@ -93,11 +90,10 @@ class ChannelsOrm:
             await session.commit()
 
     @staticmethod
-    async def update_channel_settings(channel_id: int, posts_available_count: int, posts_count: int, theme: PostTheme,
+    async def update_channel_settings(channel_id: int, posts_count: int, theme: PostTheme,
                                       is_active_posting: bool, resource: Resource):
         async with async_session() as session:
             stmt = update(ChannelsSettingsModel).values(
-                posts_available_count=posts_available_count,
                 posts_count=posts_count,
                 theme=theme,
                 is_active_posting=is_active_posting,

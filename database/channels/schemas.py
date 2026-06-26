@@ -4,7 +4,6 @@ from business_logic.services.channels_service.options.options import Resource, P
 
 class ChannelSettingsDto(BaseModel):
     post_count: int
-    post_available_count: int
     post_theme: PostTheme
     posts_resource: Resource
     is_active_posting: bool

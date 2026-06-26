@@ -13,7 +13,7 @@ async def channel_settings_main_menu(call: CallbackQuery):
     call_data = call.data.split("_")
     channel_id = int(call_data[1])
     channel_set_service = ChannelSettingsService()
-    settings = await channel_set_service.get_channel_settings(channel_id=channel_id)
+    settings = await channel_set_service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     kb_instance = MenuKb(channel_id=channel_id)
     buttons = kb_instance.get_kb()
     text = get_settings_menu_text(settings)

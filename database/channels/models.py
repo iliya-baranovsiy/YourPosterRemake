@@ -31,7 +31,6 @@ class ChannelsSettingsModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     channel_id: Mapped[int] = mapped_column(ForeignKey("Channels.channel_id", ondelete="CASCADE"), unique=True)
-    posts_available_count: Mapped[int] = mapped_column(default=PLAN_INFO[PaymentOptions.STANDART].posts_count)
     posts_count: Mapped[int] = mapped_column(default=0)
     theme: Mapped[PostTheme] = mapped_column(Enum(PostTheme),
                                              default=PostTheme.UNDEFINED,

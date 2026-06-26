@@ -1,6 +1,5 @@
 from cache.app_cache.channels_cache import ChannelsCache
 from business_logic.entities.channel_entity import PostTheme, Resource, BaseChannelInfo, ChannelSettings
-from database.payments.options import PaymentOptions, PLAN_INFO
 
 
 class ChannelsCacheRepository:
@@ -20,7 +19,6 @@ class ChannelsCacheRepository:
                                    channel_id: int,
                                    channel_name: str,
                                    time: list[str] | None = None,
-                                   posts_available_count: int = PLAN_INFO[PaymentOptions.STANDART].posts_count,
                                    posts_count: int = 0,
                                    theme: PostTheme = PostTheme.UNDEFINED,
                                    posting_is_active: bool = False,
@@ -28,7 +26,6 @@ class ChannelsCacheRepository:
         await self.channels_cache.add_channel_settings(
             channel_id=channel_id,
             channel_name=channel_name,
-            posts_available_count=posts_available_count,
             posts_count=posts_count,
             theme=theme.value,
             time=time,
@@ -50,7 +47,7 @@ class ChannelsCacheRepository:
             settings = ChannelSettings(channel_id=channel_id,
                                        channel_name=data["channel_name"],
                                        posts_count=data["posts_count"],
-                                       posts_available_count=data["posts_available_count"],
+                                       posts_available_count=0,
                                        theme=PostTheme(data["theme"]),
                                        resource=Resource(data["resource"]),
                                        time=data["time"],
@@ -63,7 +60,6 @@ class ChannelsCacheRepository:
         await self.add_channel_settings(
             channel_id=channel.channel_id,
             channel_name=channel.channel_name,
-            posts_available_count=channel.posts_available_count,
             posts_count=channel.posts_count,
             theme=channel.theme,
             posting_is_active=channel.posting_is_active,
