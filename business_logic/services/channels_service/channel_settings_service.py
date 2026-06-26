@@ -18,7 +18,8 @@ class ChannelSettingsService:
                                                       time=settings.time,
                                                       theme=settings.theme,
                                                       posts_count=settings.posts_count,
-                                                      posts_available_count=settings.posts_available_count)
+                                                      posts_available_count=settings.posts_available_count,
+                                                      resource=settings.resource)
         return settings
 
     async def update_channel_settings(self, channel: ChannelSettings):

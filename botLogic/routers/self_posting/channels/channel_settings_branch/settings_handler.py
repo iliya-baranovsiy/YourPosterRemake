@@ -22,12 +22,12 @@ async def get_settings_menu(call: CallbackQuery, channel_id: int):
     payment_plan = await user_service.get_only_payment_plan(tg_id=call.message.chat.id)
     channel_data = await channel_service.get_channel_settings(channel_id=channel_id)
     kb = SettingsKb(channel_id=channel_id, payment_plan=payment_plan, is_active=channel_data.posting_is_active,
-                    theme=channel_data.theme)
+                    theme=channel_data.theme, resource=channel_data.resource)
     text_cls = SettingsMenuText(theme=channel_data.theme,
                                 is_active=channel_data.posting_is_active,
                                 payment_plan=payment_plan,
                                 source=channel_data.resource)
-    text = text_cls.get_text()
+    text = text_cls.get_text() or "test text"
     buttons = kb.get_kb()
     await call.message.edit_text(text=text, reply_markup=buttons)
 
