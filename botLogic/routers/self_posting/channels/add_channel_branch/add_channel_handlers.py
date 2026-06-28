@@ -5,11 +5,12 @@ from aiogram.fsm.context import FSMContext
 from .states.post_waiting import WaitPostOrId
 from business_logic.services.channels_service.add_channel_facade import AddTgChannelFacade
 from .keyboards.keyboard import get_back_button
+from botLogic.common_bot_tools.callback_data import ChannelCb
 
 router = Router(name=__name__)
 
 
-@router.callback_query(F.data == "add_channel")
+@router.callback_query(ChannelCb.filter(F.action == "addChannel"))
 async def asking_for_post(call: CallbackQuery, state: FSMContext):
     buttons = get_back_button()
     await call.message.edit_text("Перешли мне пост со своего канала для привязки", reply_markup=buttons)

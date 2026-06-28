@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from business_logic.entities.channel_entity import UserChannelsInfo
+from botLogic.common_bot_tools.callback_data import ChannelCb
 
 
 class MenuKbBuilder:
@@ -7,10 +8,18 @@ class MenuKbBuilder:
         self.kb_buttons = []
 
     def create_channel_button(self, channel_name: str, channel_id: int):
-        self.kb_buttons.append([InlineKeyboardButton(text=channel_name, callback_data=f"channel_{channel_id}")])
+        self.kb_buttons.append([InlineKeyboardButton(text=channel_name,
+                                                     callback_data=ChannelCb(
+                                                         channel_id=channel_id,
+                                                         action="openChannelMenu",
+                                                     ).pack())])
 
     def create_add_channel_button(self):
-        self.kb_buttons.append([InlineKeyboardButton(text="Добавить канал", callback_data="add_channel")])
+        self.kb_buttons.append([InlineKeyboardButton(text="Добавить канал",
+                                                     callback_data=ChannelCb(
+                                                         channel_id=0,
+                                                         action="addChannel",
+                                                     ).pack())])
 
     def create_back_button(self):
         self.kb_buttons.append([InlineKeyboardButton(text="Назад", callback_data="autoposting_menu")])

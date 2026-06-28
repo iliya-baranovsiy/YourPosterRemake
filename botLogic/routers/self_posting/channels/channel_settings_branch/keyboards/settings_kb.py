@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.payments.options import PaymentOptions
 from business_logic.services.channels_service.options.options import PostTheme, Resource
+from botLogic.common_bot_tools.callback_data import ChannelSettingsCb, ChannelCb
 
 
 class SettingsKbBuilder:
@@ -9,32 +10,56 @@ class SettingsKbBuilder:
         self.channel_id = channel_id
 
     def create_theme_button(self):
-        self.kb.append([InlineKeyboardButton(text="Тема поста", callback_data=f"theme_{self.channel_id}")])
+        self.kb.append([InlineKeyboardButton(text="Тема поста",
+                                             callback_data=ChannelSettingsCb(
+                                                 action="openThemeMenu",
+                                                 channel_id=self.channel_id, ).pack())])
 
     def create_source_button(self):
-        self.kb.append([InlineKeyboardButton(text="Сменить ресурс", callback_data=f"sourceChange_{self.channel_id}")])
+        self.kb.append([InlineKeyboardButton(text="Сменить ресурс",
+                                             callback_data=ChannelSettingsCb(
+                                                 action="changeSource",
+                                                 channel_id=self.channel_id, ).pack())])
 
     def create_load_file_button(self):
-        self.kb.append([InlineKeyboardButton(text="Загрузить файл", callback_data=f"loadFile_{self.channel_id}")])
+        self.kb.append([InlineKeyboardButton(text="Загрузить файл",
+                                             callback_data=ChannelSettingsCb(
+                                                 action="loadFileMenu",
+                                                 channel_id=self.channel_id, ).pack())])
 
     def create_generate_ai_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Сгенерировать файл", callback_data=f"generateFile_{self.channel_id}")])
+            [InlineKeyboardButton(text="Сгенерировать файл",
+                                  callback_data=ChannelSettingsCb(
+                                      action="generateFileMenu",
+                                      channel_id=self.channel_id, ).pack())])
 
     def create_posts_time_button(self):
-        self.kb.append([InlineKeyboardButton(text="Время постов", callback_data=f"timelist_{self.channel_id}")])
+        self.kb.append([InlineKeyboardButton(text="Время постов",
+                                             callback_data=ChannelSettingsCb(
+                                                 action="openTimeList",
+                                                 channel_id=self.channel_id, ).pack())])
 
     def create_activate_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Включить автопостинг", callback_data=f"start_selfposting_{self.channel_id}")])
+            [InlineKeyboardButton(text="Включить автопостинг",
+                                  callback_data=ChannelSettingsCb(
+                                      action="activatePosting",
+                                      channel_id=self.channel_id, ).pack())])
 
     def create_deactivate_button(self):
         self.kb.append(
             [InlineKeyboardButton(text="Выключить автопостинг",
-                                  callback_data=f"deactivate_selfposting_{self.channel_id}")])
+                                  callback_data=ChannelSettingsCb(
+                                      action="deactivatePosting",
+                                      channel_id=self.channel_id, ).pack())])
 
     def create_back_button(self):
-        self.kb.append([InlineKeyboardButton(text="Назад", callback_data=f"channel_{self.channel_id}")])
+        self.kb.append([InlineKeyboardButton(text="Назад",
+                                             callback_data=ChannelCb(
+                                                 channel_id=self.channel_id,
+                                                 action="openChannelMenu",
+                                             ).pack())])
 
 
 class SettingsKb:
