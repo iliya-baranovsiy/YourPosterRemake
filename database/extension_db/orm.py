@@ -28,3 +28,11 @@ class ExtensionOrm:
                 delete(table).where(table.channel_id == channel_id)
             )
             await session.commit()
+
+    @staticmethod
+    async def delete_target_record(channel_id: int, title: str, table):
+        async with async_session() as session:
+            await session.execute(
+                delete(table).where(table.channel_id == channel_id, table.title == title)
+            )
+            await session.commit()
