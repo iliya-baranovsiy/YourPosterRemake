@@ -32,7 +32,7 @@ PLAN_INFO = {
         priority=1,
         price=Decimal(2.99),
         channels_count=2,
-        posts_count=5,
+        posts_count=4,
         file_load=True,
         ai_load=False
     ),

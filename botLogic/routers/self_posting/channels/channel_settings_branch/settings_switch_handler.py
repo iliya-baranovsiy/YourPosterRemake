@@ -1,0 +1,30 @@
+from aiogram import Router, F
+from aiogram.types import CallbackQuery
+
+from business_logic.services.channels_service.channel_settings_service import ChannelSettingsService
+from botLogic.common_bot_tools.callback_data import ChannelSettingsCb
+from .settings_menu_handler import get_settings_menu
+
+router = Router(name=__name__)
+
+
+@router.callback_query(ChannelSettingsCb.filter(F.action == "activatePosting"))
+async def activate_self_posting(call: CallbackQuery, callback_data: ChannelSettingsCb):
+    channels_set_srvice = ChannelSettingsService()
+    channel_id = callback_data.channel_id
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
+    channel.posting_is_active = True
+    await channels_set_srvice.update_channel_settings(channel)
+    await get_settings_menu(call=call, channel_id=channel_id)
+    await call.answer(text="Постинг активирован", show_alert=True)
+
+
+@router.callback_query(ChannelSettingsCb.filter(F.action == "deactivatePosting"))
+async def deactivate_self_posting(call: CallbackQuery, callback_data: ChannelSettingsCb):
+    channels_set_srvice = ChannelSettingsService()
+    channel_id = callback_data.channel_id
+    channel = await channels_set_srvice.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
+    channel.posting_is_active = False
+    await channels_set_srvice.update_channel_settings(channel)
+    await get_settings_menu(call=call, channel_id=channel_id)
+    await call.answer(text="Постинг выключен", show_alert=True)
