@@ -1,4 +1,5 @@
 from aiogram.filters.callback_data import CallbackData
+from business_logic.entities.channel_entity import Resource
 
 
 class ChannelSettingsCb(CallbackData, prefix="Settings"):
@@ -20,4 +21,10 @@ class TimeCb(CallbackData, prefix="Times"):
 
 class ChannelCb(CallbackData, prefix="Channel"):
     channel_id: int
+    action: str
+
+
+class ResourceCb(CallbackData, prefix="Resource"):
+    channel_id: int
+    resource: Resource
     action: str
