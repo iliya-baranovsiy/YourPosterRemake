@@ -24,7 +24,7 @@ class SettingsMenuBuilder:
         self.text += "Постинг не активен\n"
 
     def add_source_str(self):
-        self.text += f"Источник: {self._source.value}"
+        self.text += f"Источник: {self._source.value}\n"
 
 
 class SettingsMenuText:
@@ -43,6 +43,16 @@ class SettingsMenuText:
         self.builder.add_source_str()
         return self.builder.text
 
+    def get_text_for_pro(self):
+        self.builder.add_source_str()
+        if self.is_active:
+            self.builder.add_posting_is_active_str()
+        else:
+            self.builder.add_posting_non_active_str()
+        return self.builder.text
+
     def get_text(self):
         if self.payment_plan == PaymentOptions.STANDART:
             return self.get_text_for_standard()
+        elif self.payment_plan == PaymentOptions.PRO:
+            return self.get_text_for_pro()
