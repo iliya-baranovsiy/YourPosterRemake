@@ -13,6 +13,7 @@ from database.parse_db.models import NewsTable
 from database.payments.models import PaymentModel
 from database.channels.models import ChannelsModel
 from database.users.models import UserModel
+from database.extension_db.models import FileUserModel
 
 config = context.config
 

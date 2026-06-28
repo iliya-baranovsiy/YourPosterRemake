@@ -1,9 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Index, BigInteger, Enum, text, Time
-from datetime import time
 from database.engines import Base
 from business_logic.services.channels_service.options.options import PostTheme, Resource
-from database.payments.options import PLAN_INFO, PaymentOptions
+from ..extension_db.models import FileUserModel, GenerateUserModel
 
 
 class ChannelsModel(Base):
@@ -22,6 +21,10 @@ class ChannelsModel(Base):
                                                           back_populates="channel",
                                                           passive_deletes=True,
                                                           cascade="all, delete-orphan")
+    file_storage: Mapped["FileUserModel"] = relationship("FileUserModel", back_populates="channel",
+                                                         passive_deletes=True, cascade="all, delete-orphan")
+    generative_storage: Mapped["GenerateUserModel"] = relationship("GenerateUserModel", back_populates="channel",
+                                                                   passive_deletes=True, cascade="all, delete-orphan")
 
     __table_args__ = (Index("channels_index", "channel_id", "owner_id"),)
 
