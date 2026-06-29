@@ -7,6 +7,7 @@ import asyncio
 
 from cache.app_cache.user_cache import UserCache  # delete
 from cache.app_cache.channels_cache import ChannelsCache  # delete
+from cache.app_cache.extension_cache import ExtensionCache  # delete
 
 
 @contextlib.asynccontextmanager
@@ -35,4 +36,5 @@ async def start_bot():
 if __name__ == "__main__":
     asyncio.run(UserCache().clear_cache())  # delete
     asyncio.run(ChannelsCache().clear_channels_cache())  # delete
+    asyncio.run(ExtensionCache().clear_count())  # delete
     asyncio.run(start_bot())

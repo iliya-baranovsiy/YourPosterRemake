@@ -24,7 +24,6 @@ class ChannelsCache:
                                    time: list | None,
                                    posting_is_active: bool,
                                    resource: str,
-                                   file_posts_count: int
                                    ):
         data = {
             "channel_name": channel_name,
@@ -33,7 +32,6 @@ class ChannelsCache:
             "time": time,
             "posting_is_active": posting_is_active,
             "resource": resource,
-            "file_posts_count": file_posts_count
         }
         async with redis_engine as redis:
             await redis.hset(self.channels_settings_namespace, str(channel_id), json.dumps(data))

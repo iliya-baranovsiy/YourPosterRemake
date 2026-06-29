@@ -24,10 +24,7 @@ class ChannelsDbRepository:
         return []
 
     async def get_channel_settings(self, channel_id: int):
-        data, file_posts_count = await asyncio.gather(
-            self.channels_orm.get_channel_settings(channel_id=channel_id),
-            self.extension_orm.get_records_count(table=FileUserModel, channel_id=channel_id)
-        )
+        data = await self.channels_orm.get_channel_settings(channel_id=channel_id)
         settings = ChannelSettings(channel_id=channel_id,
                                    channel_name=data.channel_name,
                                    posts_count=data.post_count,
@@ -35,8 +32,7 @@ class ChannelsDbRepository:
                                    posting_is_active=data.is_active_posting,
                                    theme=data.post_theme,
                                    resource=data.posts_resource,
-                                   time=data.posts_times,
-                                   file_posts_count=file_posts_count)
+                                   time=data.posts_times,)
         return settings
 
     async def check_channel_existing(self, channel_id: int) -> bool:

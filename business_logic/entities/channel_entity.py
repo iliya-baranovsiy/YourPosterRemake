@@ -28,7 +28,6 @@ class ChannelSettings:
     channel_name: str
     posts_available_count: int
     posts_count: int
-    file_posts_count: int
     theme: PostTheme
     time: list | None
     posting_is_active: bool

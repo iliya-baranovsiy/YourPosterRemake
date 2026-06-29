@@ -32,7 +32,7 @@ class KbBuilder:
 
 
 class LoadFileKb:
-    def __init__(self, channel_id: int, status: Status, file_posts_count: int):
+    def __init__(self, channel_id: int, status: Status, file_posts_count):
         self.channel_id = channel_id
         self.builder = KbBuilder(channel_id=self.channel_id)
         self.status = status

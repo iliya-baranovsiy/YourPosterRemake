@@ -13,4 +13,5 @@ class ExtensionFileRepository:
         await self.orm.delete_records(table=FileUserModel, channel_id=channel_id)
 
     async def get_file_posts_count(self, channel_id: int):
-        await self.orm.get_records_count(channel_id=channel_id, table=FileUserModel)
+        count = await self.orm.get_records_count(channel_id=channel_id, table=FileUserModel)
+        return count
