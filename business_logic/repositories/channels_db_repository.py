@@ -1,11 +1,15 @@
+import asyncio
+
 from database.channels.channels_orm import ChannelsOrm
+from database.extension_db.orm import ExtensionOrm
+from database.extension_db.models import FileUserModel
 from business_logic.entities.channel_entity import BaseChannelInfo, ChannelSettings
-from ..entities.channel_entity import Resource
 
 
 class ChannelsDbRepository:
     def __init__(self):
         self.channels_orm = ChannelsOrm()
+        self.extension_orm = ExtensionOrm()
 
     async def add_channel(self, channel_id: int, owner_id: int, channel_name: str):
         await self.channels_orm.add_channel(channel_id=channel_id, owner_id=owner_id, channel_title=channel_name)
@@ -20,7 +24,10 @@ class ChannelsDbRepository:
         return []
 
     async def get_channel_settings(self, channel_id: int):
-        data = await self.channels_orm.get_channel_settings(channel_id=channel_id)
+        data, file_posts_count = await asyncio.gather(
+            self.channels_orm.get_channel_settings(channel_id=channel_id),
+            self.extension_orm.get_records_count(table=FileUserModel, channel_id=channel_id)
+        )
         settings = ChannelSettings(channel_id=channel_id,
                                    channel_name=data.channel_name,
                                    posts_count=data.post_count,
@@ -28,7 +35,8 @@ class ChannelsDbRepository:
                                    posting_is_active=data.is_active_posting,
                                    theme=data.post_theme,
                                    resource=data.posts_resource,
-                                   time=data.posts_times)
+                                   time=data.posts_times,
+                                   file_posts_count=file_posts_count)
         return settings
 
     async def check_channel_existing(self, channel_id: int) -> bool:

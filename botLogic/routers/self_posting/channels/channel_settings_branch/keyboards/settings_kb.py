@@ -22,7 +22,7 @@ class SettingsKbBuilder:
                                                  channel_id=self.channel_id, ).pack())])
 
     def create_load_file_button(self):
-        self.kb.append([InlineKeyboardButton(text="Загрузить файл",
+        self.kb.append([InlineKeyboardButton(text="Данные файла",
                                              callback_data=ChannelSettingsCb(
                                                  action="loadFileMenu",
                                                  channel_id=self.channel_id, ).pack())])

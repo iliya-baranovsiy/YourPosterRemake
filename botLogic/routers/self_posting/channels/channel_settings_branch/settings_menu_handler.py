@@ -20,7 +20,7 @@ async def get_settings_menu(call: CallbackQuery, channel_id: int):
     text_cls = SettingsMenuText(theme=channel_data.theme,
                                 is_active=channel_data.posting_is_active,
                                 payment_plan=payment_plan,
-                                source=channel_data.resource)
+                                source=channel_data.resource, count=channel_data.file_posts_count)
     text = text_cls.get_text() or "test text"
     buttons = kb.get_kb()
     await call.message.edit_text(text=text, reply_markup=buttons)

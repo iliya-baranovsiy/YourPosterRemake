@@ -22,7 +22,8 @@ class ChannelsCacheRepository:
                                    posts_count: int = 0,
                                    theme: PostTheme = PostTheme.UNDEFINED,
                                    posting_is_active: bool = False,
-                                   resource: Resource = Resource.DATABASE):
+                                   resource: Resource = Resource.DATABASE,
+                                   file_posts_count: int = 0):
         await self.channels_cache.add_channel_settings(
             channel_id=channel_id,
             channel_name=channel_name,
@@ -30,7 +31,8 @@ class ChannelsCacheRepository:
             theme=theme.value,
             time=time,
             posting_is_active=posting_is_active,
-            resource=resource.value)
+            resource=resource.value,
+            file_posts_count=file_posts_count)
 
     async def get_user_channels(self, owner_id: int) -> list:
         data = await self.channels_cache.get_user_channels(owner_id=owner_id)
@@ -51,7 +53,8 @@ class ChannelsCacheRepository:
                                        theme=PostTheme(data["theme"]),
                                        resource=Resource(data["resource"]),
                                        time=data["time"],
-                                       posting_is_active=data["posting_is_active"]
+                                       posting_is_active=data["posting_is_active"],
+                                       file_posts_count=data["file_posts_count"]
                                        )
             return settings
         return None
@@ -64,7 +67,8 @@ class ChannelsCacheRepository:
             theme=channel.theme,
             posting_is_active=channel.posting_is_active,
             resource=channel.resource,
-            time=channel.time
+            time=channel.time,
+            file_posts_count=channel.file_posts_count
         )
 
     async def check_existing(self, channel_id: int) -> bool:

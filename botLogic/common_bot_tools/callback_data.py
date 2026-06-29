@@ -28,3 +28,8 @@ class ResourceCb(CallbackData, prefix="Resource"):
     channel_id: int
     resource: Resource
     action: str
+
+
+class LoadCb(CallbackData, prefix="fileLoad"):
+    channel_id: int
+    action: str

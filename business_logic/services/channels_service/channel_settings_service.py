@@ -21,7 +21,8 @@ class ChannelSettingsService:
                                                       time=settings.time,
                                                       theme=settings.theme,
                                                       posts_count=settings.posts_count,
-                                                      resource=settings.resource)
+                                                      resource=settings.resource,
+                                                      file_posts_count=settings.file_posts_count)
         payment_plan = await self.user.get_only_payment_plan(tg_id=tg_id)
         settings.posts_available_count = PLAN_INFO[payment_plan].posts_count
         return settings
@@ -32,4 +33,7 @@ class ChannelSettingsService:
 
     async def update_channel_time(self, channel: ChannelSettings):
         await self.db_rep.update_channel_times(channel=channel)
+        await self.cache.update_settings_cache(channel=channel)
+
+    async def update_file_posts_count(self, channel):
         await self.cache.update_settings_cache(channel=channel)
