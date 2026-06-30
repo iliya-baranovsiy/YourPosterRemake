@@ -36,7 +36,6 @@ class ChannelsService:
                 for i in channels:
                     await self.channel_cache_repo.add_lost_cache(owner_id=owner_id, channel_id=i.channel_id,
                                                                  channel_name=i.channel_name)
-                pass
         return UserChannelsInfo(owner_id=owner_id,
                                 payment_plan=payment_plan,
                                 channels_count=len(channels),

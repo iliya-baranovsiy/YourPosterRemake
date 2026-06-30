@@ -9,7 +9,7 @@ from aiogram.types import Message
 class FileWork:
     def __init__(self, message: Message):
         self.message = message
-        self.path = Path("src") / "user_files" / f"{self.message.chat.id}.xlsx"
+        self.path = Path("botLogic") / "src" / "user_files" / f"{self.message.chat.id}.xlsx"
 
     def _parse_file(self, channel_id: int):
         wb = load_workbook(self.path, read_only=True)

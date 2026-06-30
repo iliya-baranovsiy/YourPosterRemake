@@ -1,6 +1,6 @@
 from datetime import datetime
 import time
-from parse_factory import parse_factory
+from parse_factory import ParseFactory
 from database.parse_db.parse_orm import clean_old_data
 
 schedule_dict_map = [
@@ -25,12 +25,9 @@ def run_parse_scheduler():
         for row in schedule_dict_map:
             if row['time'] == current_hour and row['role'] == "parse":
                 for task in row['task']:
-                    target_parse = parse_factory.create_parse_obb(task)
+                    target_parse = ParseFactory().create_parse_obb(task)
                     target_parse.parse()
             elif row['time'] == current_hour and row['role'] == "clear":
                 for task in row['task']:
                     task()
         time.sleep(3600)
-
-
-run_parse_scheduler()

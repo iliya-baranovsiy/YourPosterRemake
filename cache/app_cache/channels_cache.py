@@ -57,6 +57,15 @@ class ChannelsCache:
             await redis.hdel(self.channels_settings_namespace, str(channel_id))
             await redis.delete(f"{self.channel_index}:{channel_id}")
 
+    async def delete_by_channel_id(self, channel_id: int):
+        async with redis_engine as redis:
+            await redis.hdel(self.channels_settings_namespace, str(channel_id))
+            await redis.delete(f"{self.channel_index}:{channel_id}")
+
+    async def delete_by_tg_id(self, tg_id: int):
+        async with redis_engine as redis:
+            await redis.delete(f"{self.channels_namespace}:{tg_id}")
+
     async def clear_channels_cache(self):
         async with redis_engine as redis:
             await redis.delete(self.channels_settings_namespace)

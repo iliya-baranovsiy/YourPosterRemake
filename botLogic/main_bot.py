@@ -30,11 +30,15 @@ async def bot_webhook(request: Request):
 
 
 async def start_bot():
-    uvicorn.run("main_bot:app", host="127.0.0.1", port=8000, reload=True)
-
-
-if __name__ == "__main__":
-    asyncio.run(UserCache().clear_cache())  # delete
-    asyncio.run(ChannelsCache().clear_channels_cache())  # delete
-    asyncio.run(ExtensionCache().clear_count())  # delete
-    asyncio.run(start_bot())
+    await UserCache().clear_cache()  # delete
+    await ChannelsCache().clear_channels_cache()  # delete
+    await ExtensionCache().clear_count()  # delete
+    conf = uvicorn.Config(
+        app,
+        host="127.0.0.1",
+        port=8000,
+        log_level="info",
+        reload=True
+    )
+    server = uvicorn.Server(conf)
+    await server.serve()

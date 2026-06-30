@@ -48,7 +48,7 @@ async def request_to_load_file(call: CallbackQuery, callback_data: LoadCb, state
     channel_id = callback_data.channel_id
     buttons = get_back_button_to_settings(channel_id=channel_id)
     await call.message.edit_text("Отправь мне файл по примеру ниже или вернись в меню")
-    await call.message.answer_document(document=FSInputFile(Path("src") / "example.xlsx"))
+    await call.message.answer_document(document=FSInputFile(Path("botLogic") / "src" / "example.xlsx"))
     await call.message.answer("Вернуться в меню", reply_markup=buttons)
     await state.update_data(channel_id=channel_id)
     await state.set_state(LoadFileState.wait_file_loading)

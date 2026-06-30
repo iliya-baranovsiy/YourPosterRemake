@@ -29,4 +29,4 @@ class ParseFactory:
                 return WorldNewsParsing()
 
 
-parse_factory = ParseFactory()
+

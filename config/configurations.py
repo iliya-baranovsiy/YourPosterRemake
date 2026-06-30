@@ -15,6 +15,11 @@ class Settings:
     REDIS_HOST = os.getenv("REDIS_HOST")
     REDIS_PORT = os.getenv("REDIS_PORT")
     REDIS_DB = os.getenv("REDIS_DB")
+    MONGO_HOST = os.getenv("MONGO_HOST")
+    MONGO_PORT = os.getenv("MONGO_PORT")
+    MONGO_USER = os.getenv("MONGO_USER")
+    MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
+    DEV = int(os.getenv("DEV"))
 
     @property
     def get_async_db_url(self):
@@ -23,6 +28,12 @@ class Settings:
     @property
     def get_sync_db_url(self):
         return f'postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
+
+    @property
+    def get_mongo_url(self):
+        if self.DEV:
+            return f"mongodb://{self.MONGO_HOST}:{self.MONGO_PORT}"
+        return f"mongodb://{self.MONGO_USER}:{self.MONGO_PASSWORD}@{self.MONGO_HOST}:{self.MONGO_PORT}"
 
 
 settings = Settings()

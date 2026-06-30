@@ -19,6 +19,10 @@ class ExtensionCache:
             row_data = await redis.hget(self.namespace, str(channel_id))
             return json.loads(row_data) if row_data else None
 
+    async def delete_posts_count(self, channel_id: int):
+        async with redis_engine as redis:
+            await redis.hdel(self.namespace, str(channel_id))
+
     async def clear_count(self):
         async with redis_engine as redis:
             await redis.delete("file_extension")
