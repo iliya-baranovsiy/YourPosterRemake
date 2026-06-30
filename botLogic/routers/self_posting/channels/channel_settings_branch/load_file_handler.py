@@ -1,7 +1,6 @@
-import traceback
-
+from pathlib import Path
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, Message, Document
+from aiogram.types import CallbackQuery, Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from botLogic.common_bot_tools.callback_data import ChannelSettingsCb, LoadCb
@@ -48,7 +47,9 @@ async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
 async def request_to_load_file(call: CallbackQuery, callback_data: LoadCb, state: FSMContext):
     channel_id = callback_data.channel_id
     buttons = get_back_button_to_settings(channel_id=channel_id)
-    await call.message.edit_text("Отправь мне файл", reply_markup=buttons)
+    await call.message.edit_text("Отправь мне файл по примеру ниже или вернись в меню")
+    await call.message.answer_document(document=FSInputFile(Path("src") / "example.xlsx"))
+    await call.message.answer("Вернуться в меню", reply_markup=buttons)
     await state.update_data(channel_id=channel_id)
     await state.set_state(LoadFileState.wait_file_loading)
 
