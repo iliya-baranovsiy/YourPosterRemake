@@ -1,5 +1,6 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
 
 from business_logic.services.channels_service.channel_settings_service import ChannelSettingsService
 from business_logic.services.user_service import UserService
@@ -7,11 +8,13 @@ from .keyboards.settings_kb import SettingsKb
 from .function_tools.text import SettingsMenuText
 from botLogic.common_bot_tools.callback_data import ChannelSettingsCb
 from business_logic.services.channels_service.extension_service import ExtensionService
+from botLogic.common_bot_tools.tools.state_cleaner import clean_state
 
 router = Router(name=__name__)
 
 
-async def get_settings_menu(call: CallbackQuery, channel_id: int):
+async def get_settings_menu(call: CallbackQuery, channel_id: int, state: FSMContext):
+    await clean_state(state)
     channel_service = ChannelSettingsService()
     user_service = UserService()
     ext_service = ExtensionService()
@@ -31,6 +34,6 @@ async def get_settings_menu(call: CallbackQuery, channel_id: int):
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "openMenu"))
-async def settings_menu_handler(call: CallbackQuery, callback_data: ChannelSettingsCb):
+async def settings_menu_handler(call: CallbackQuery, callback_data: ChannelSettingsCb, state: FSMContext):
     channel_id = callback_data.channel_id
-    await get_settings_menu(call=call, channel_id=channel_id)
+    await get_settings_menu(call=call, channel_id=channel_id, state=state)
