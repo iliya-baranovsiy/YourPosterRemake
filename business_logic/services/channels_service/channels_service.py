@@ -26,10 +26,8 @@ class ChannelsService:
         await self.channel_cache_repo.add_channel(channel_id=channel_id, owner_id=owner_id, channel_name=channel_name)
 
     async def get_channels(self, owner_id: int) -> UserChannelsInfo:
-        payment_plan, channels = await asyncio.gather(
-            self.user_rep.get_only_payment_plan(tg_id=owner_id),
-            self.channel_cache_repo.get_user_channels(owner_id=owner_id)
-        )
+        payment_plan = await self.user_rep.get_only_payment_plan(tg_id=owner_id)
+        channels = await self.channel_cache_repo.get_user_channels(owner_id=owner_id)
         if not channels:
             channels = await self.channel_repo.get_channels(owner_id=owner_id)
             if channels:

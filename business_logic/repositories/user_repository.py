@@ -33,7 +33,3 @@ class UserRepository:
                                         priority=user.subscription.priority,
                                         activate_date=start_date,
                                         end_date=user.subscription.end_date_row)
-
-    async def get_only_payment_plan(self, tg_id):
-        data = await self.orm.get_only_payment_plan(tg_id=tg_id)
-        return data.payment_plan if data else None

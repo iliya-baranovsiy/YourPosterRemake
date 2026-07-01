@@ -30,12 +30,12 @@ async def bot_webhook(request: Request):
 
 
 async def start_bot():
-    await UserCache().clear_cache()  # delete
-    await ChannelsCache().clear_channels_cache()  # delete
-    await ExtensionCache().clear_count()  # delete
+    #await UserCache().clear_cache()  # delete
+    #await ChannelsCache().clear_channels_cache()  # delete
+    #await ExtensionCache().clear_count()  # delete
     conf = uvicorn.Config(
         app,
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=8000,
         log_level="info",
         reload=True

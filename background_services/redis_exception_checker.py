@@ -1,4 +1,4 @@
-import time
+import asyncio
 
 from cache.redis_instance import redis_engine
 from mongo.mongo_cache_worker import MongoExceptionWork
@@ -15,14 +15,13 @@ class RedisChecker:
         while True:
             await redis_exception.wait()
             exceptions_ids = await self.mongo.get_all_ids()
-            print('EXCEPTION----------------------------------------')
             if exceptions_ids:
                 try:
                     await redis_engine.ping()
                     await self.redis.clear_cache(exceptions_ids)
 
                 except:
-                    time.sleep(3)
+                    await asyncio.sleep(3)
                     continue
             redis_exception.clear()
 

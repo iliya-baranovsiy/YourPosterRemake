@@ -7,7 +7,7 @@ class MongoExceptionWork:
         self.db = client["exception_db"]
         self.mongo = self.db["exception_ids"]
 
-    async def create_index(self):
+    async def create_mongo_index(self):
         await self.mongo.create_index("id", unique=True)
 
     async def write_id(self, id_: int):

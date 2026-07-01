@@ -57,11 +57,3 @@ class UserOrm:
             async with session.begin():
                 await session.execute(user_stmt)
                 await session.execute(payment_stmt)
-
-    @staticmethod
-    async def get_only_payment_plan(tg_id: int):
-        async with async_session() as session:
-            query = select(PaymentModel.payment_plan).where(PaymentModel.user_id == tg_id)
-            executing = await session.execute(query)
-            result = executing.first()
-            return OnlyPaymentPlanDto(payment_plan=result[0])

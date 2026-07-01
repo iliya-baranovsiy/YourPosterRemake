@@ -39,6 +39,7 @@ class UserService:
         data_in_cache = await self.cache.get_only_payment_plan_cache(tg_id=tg_id)
         if data_in_cache:
             return data_in_cache
-        data_in_db = await self.repo.get_only_payment_plan(tg_id=tg_id)
-        if data_in_db:
-            return data_in_db
+        user = await self.get_user(tg_id=tg_id)
+        if user:
+            await self.cache.add_lost_user_cache(user)
+            return user.subscription.payment_plan

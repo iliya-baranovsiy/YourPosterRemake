@@ -3,6 +3,7 @@ from business_logic.entities.channel_entity import PostTheme, Resource, BaseChan
 from mongo.mongo_cache_worker import MongoExceptionWork
 from events.redis_exeption_event import redis_exception
 
+
 class ChannelsCacheRepository:
     def __init__(self):
         self.channels_cache = ChannelsCache()
