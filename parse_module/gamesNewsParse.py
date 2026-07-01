@@ -1,5 +1,5 @@
 from database.parse_db.models import GamesTable
-from parse_module.baseSettings import BaseParse
+from .baseSettings import BaseParse
 
 
 class GamesParsing(BaseParse):

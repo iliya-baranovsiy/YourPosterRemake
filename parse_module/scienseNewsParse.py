@@ -1,4 +1,4 @@
-from parse_module.baseSettings import BaseParse
+from .baseSettings import BaseParse
 from database.parse_db.models import ScienceTable
 
 

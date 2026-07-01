@@ -35,5 +35,9 @@ class Settings:
             return f"mongodb://{self.MONGO_HOST}:{self.MONGO_PORT}"
         return f"mongodb://{self.MONGO_USER}:{self.MONGO_PASSWORD}@{self.MONGO_HOST}:{self.MONGO_PORT}"
 
+    @property
+    def get_redis(self):
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+
 
 settings = Settings()

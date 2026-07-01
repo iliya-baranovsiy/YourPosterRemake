@@ -1,5 +1,5 @@
 from database.parse_db.models import CryptoCurrencyTable
-from parse_module.baseSettings import BaseParse
+from .baseSettings import BaseParse
 
 
 class CryptoNewsParsing(BaseParse):

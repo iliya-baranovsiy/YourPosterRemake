@@ -1,5 +1,5 @@
-from parse_module.itNewsParse import ItNewsParsing
 from database.parse_db.models import AiNewsTable
+from .itNewsParse import ItNewsParsing
 
 
 class AiNewsParsing(ItNewsParsing):

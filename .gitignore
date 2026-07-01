@@ -1,5 +1,6 @@
 .idea/
 .env
+.env.prod
 __pycache__/
 notes.txt
 test.py

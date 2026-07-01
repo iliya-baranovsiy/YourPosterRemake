@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import concurrent.futures
 from database.parse_db.parse_orm import create_records, get_titles
-from parse_module.parseTools.uniqueValues import unique
+from .parseTools.uniqueValues import unique
 
 
 class BaseParse:
