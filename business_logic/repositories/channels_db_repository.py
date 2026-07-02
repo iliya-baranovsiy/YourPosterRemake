@@ -2,8 +2,8 @@ import asyncio
 
 from database.channels.channels_orm import ChannelsOrm
 from database.extension_db.orm import ExtensionOrm
-from database.extension_db.models import FileUserModel
 from business_logic.entities.channel_entity import BaseChannelInfo, ChannelSettings
+from business_logic.entities.channel_entity import Resource, PostTheme
 
 
 class ChannelsDbRepository:
@@ -32,7 +32,7 @@ class ChannelsDbRepository:
                                    posting_is_active=data.is_active_posting,
                                    theme=data.post_theme,
                                    resource=data.posts_resource,
-                                   time=data.posts_times,)
+                                   time=data.posts_times, )
         return settings
 
     async def check_channel_existing(self, channel_id: int) -> bool:
@@ -52,4 +52,9 @@ class ChannelsDbRepository:
         await self.channels_orm.update_channel_times(channel_id=channel.channel_id, times=channel.time)
 
     async def delete_channel(self, channel_id: int):
+        channel = await self.get_channel_settings(channel_id=channel_id)
+        channel.theme = PostTheme.UNDEFINED
+        channel.posting_is_active = False
+        channel.resource = Resource.DATABASE
+        await self.update_channel_settings(channel)
         await self.channels_orm.delete_channel(channel_id=channel_id)

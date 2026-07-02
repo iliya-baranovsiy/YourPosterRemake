@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4b482f55eb73
+Revision ID: 0932d9961720
 Revises: 
-Create Date: 2026-06-29 00:37:03.955494
+Create Date: 2026-07-03 00:14:53.768809
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '4b482f55eb73'
+revision: str = '0932d9961720'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,6 +32,16 @@ def upgrade() -> None:
     sa.UniqueConstraint('title')
     )
     op.create_index('title_drop_index_AI', 'AiNews', ['title', 'dropDate'], unique=False)
+    op.create_table('ChannelsSettings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('channel_id', sa.BigInteger(), nullable=False),
+    sa.Column('posts_count', sa.Integer(), nullable=False),
+    sa.Column('theme', sa.Enum('AI_NEWS', 'CRYPTO_NEWS', 'GAMES_NEWS', 'IT_NEWS', 'SCIENCE_NEWS', 'SHOW_BIS_NEWS', 'SPORT_NEWS', 'WORLD_NEWS', 'OWN_FILE', 'AI_POSTS', 'UNDEFINED', name='posttheme'), server_default=sa.text("'UNDEFINED'"), nullable=False),
+    sa.Column('is_active_posting', sa.Boolean(), nullable=False),
+    sa.Column('resource', sa.Enum('DATABASE', 'FILE', 'AI_POSTS', name='resource'), server_default=sa.text("'DATABASE'"), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('channel_id')
+    )
     op.create_table('CryptoCurrencyNews',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
@@ -142,17 +152,6 @@ def upgrade() -> None:
     sa.UniqueConstraint('user_id')
     )
     op.create_index('user_payment_index', 'User_payments', ['user_id', 'end_date'], unique=False)
-    op.create_table('ChannelsSettings',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('channel_id', sa.BigInteger(), nullable=False),
-    sa.Column('posts_count', sa.Integer(), nullable=False),
-    sa.Column('theme', sa.Enum('AI_NEWS', 'CRYPTO_NEWS', 'GAMES_NEWS', 'IT_NEWS', 'SCIENCE_NEWS', 'SHOW_BIS_NEWS', 'SPORT_NEWS', 'WORLD_NEWS', 'OWN_FILE', 'AI_POSTS', 'UNDEFINED', name='posttheme'), server_default=sa.text("'UNDEFINED'"), nullable=False),
-    sa.Column('is_active_posting', sa.Boolean(), nullable=False),
-    sa.Column('resource', sa.Enum('DATABASE', 'FILE', 'AI_POSTS', name='resource'), server_default=sa.text("'DATABASE'"), nullable=False),
-    sa.ForeignKeyConstraint(['channel_id'], ['Channels.channel_id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('channel_id')
-    )
     op.create_table('PostsTimes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('channel_id', sa.BigInteger(), nullable=False),
@@ -187,7 +186,6 @@ def downgrade() -> None:
     op.drop_table('generate_user_storage')
     op.drop_table('file_user_storage')
     op.drop_table('PostsTimes')
-    op.drop_table('ChannelsSettings')
     op.drop_index('user_payment_index', table_name='User_payments')
     op.drop_table('User_payments')
     op.drop_index('channels_index', table_name='Channels')
@@ -208,6 +206,7 @@ def downgrade() -> None:
     op.drop_table('GamesNews')
     op.drop_index('title_drop_index_crypto', table_name='CryptoCurrencyNews')
     op.drop_table('CryptoCurrencyNews')
+    op.drop_table('ChannelsSettings')
     op.drop_index('title_drop_index_AI', table_name='AiNews')
     op.drop_table('AiNews')
     # ### end Alembic commands ###
