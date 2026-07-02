@@ -1,10 +1,9 @@
-import asyncio
-
 from business_logic.services.user_service import UserService
 from business_logic.repositories.channels_db_repository import ChannelsDbRepository
 from business_logic.repositories.channels_cache_repository import ChannelsCacheRepository
 from business_logic.entities.channel_entity import UserChannelsInfo
 from database.payments.options import PLAN_INFO
+from business_logic.repositories.extension_cache_repository import ExtensionFileCacheRepository
 
 
 class ChannelsService:
@@ -12,6 +11,7 @@ class ChannelsService:
         self.user_rep = UserService()
         self.channel_repo = ChannelsDbRepository()
         self.channel_cache_repo = ChannelsCacheRepository()
+        self.ext_file_cache = ExtensionFileCacheRepository()
 
     async def add_channel(self, owner_id: int, channel_id: int, channel_name: str):
         channel_exists = await self.channel_cache_repo.check_existing(channel_id=channel_id)
@@ -43,6 +43,7 @@ class ChannelsService:
     async def delete_channel(self, channel_id: int, owner_id: int):
         await self.channel_repo.delete_channel(channel_id=channel_id)
         await self.channel_cache_repo.delete_channel(channel_id=channel_id, owner_id=owner_id)
+        await self.ext_file_cache.delete_posts_count(channel_id=channel_id)
 
     async def check_existing(self, channel_id: int):
         is_exist = await self.channel_cache_repo.check_existing(channel_id=channel_id)
