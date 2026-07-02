@@ -45,18 +45,18 @@ class Keyboard:
     def get_kb(self, user: User):
         if ((user.subscription.pending_plan != PaymentOptions.STANDART) and
                 (user.subscription.priority > PLAN_INFO[user.subscription.pending_plan].priority)):
-            self.builder.add_vip_button()
+            # self.builder.add_vip_button()
             self.builder.add_off_move_button()
             self.builder.add_back_button()
             return InlineKeyboardMarkup(inline_keyboard=self.builder.base_kb)
         elif user.subscription.payment_plan != PaymentOptions.STANDART:
-            self.builder.add_vip_button()
+            # self.builder.add_vip_button()
             self.builder.add_pro_button()
             self.builder.add_switch_self_pay_btn(self_buy=user.automatic_buy)
             self.builder.add_back_button()
             return InlineKeyboardMarkup(inline_keyboard=self.builder.base_kb)
         else:
-            self.builder.add_vip_button()
+            # self.builder.add_vip_button()
             self.builder.add_pro_button()
             self.builder.add_back_button()
             return InlineKeyboardMarkup(inline_keyboard=self.builder.base_kb)

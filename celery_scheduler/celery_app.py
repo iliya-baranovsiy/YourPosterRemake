@@ -6,7 +6,7 @@ app = Celery(
     "services",
     backend=settings.get_redis,
     broker=settings.get_redis,
-    include=["celery_scheduler.tasks"]
+    include=["celery_scheduler.tasks", "celery_scheduler.backgrounds.tasks"]
 )
 
 app.conf.beat_schedule = {
@@ -46,6 +46,10 @@ app.conf.beat_schedule = {
         "task": "tasks.clean_old_parse_data",
         "schedule": crontab(hour=3, minute=0)
     },
+    "payment_plan_checker": {
+        "task": "background.check_payment_plan",
+        "schedule": crontab(hour=23, minute=47)
+    }
 
 }
 

@@ -15,7 +15,6 @@ class RedisChecker:
         while True:
             await redis_exception.wait()
             exceptions_ids = await self.mongo.get_all_ids()
-            print(exceptions_ids)
             if exceptions_ids:
                 try:
                     await redis_engine.ping()
