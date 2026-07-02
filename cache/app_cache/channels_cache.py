@@ -66,6 +66,24 @@ class ChannelsCache:
         async with redis_engine as redis:
             await redis.delete(f"{self.channels_namespace}:{tg_id}")
 
+    async def set_default_posts_count(self):
+        async with redis_engine as redis:
+            data = await redis.hgetall(self.channels_settings_namespace)
+
+            pipe = redis.pipeline()
+
+            for channel_id, value in data.items():
+                settings = json.loads(value)
+                settings["posts_count"] = 0
+
+                pipe.hset(
+                    self.channels_settings_namespace,
+                    channel_id,
+                    json.dumps(settings)
+                )
+
+            await pipe.execute()
+
     async def clear_channels_cache(self):
         async with redis_engine as redis:
             await redis.delete(self.channels_settings_namespace)

@@ -48,8 +48,12 @@ app.conf.beat_schedule = {
     },
     "payment_plan_checker": {
         "task": "background.check_payment_plan",
-        "schedule": crontab(hour=23, minute=47)
-    }
+        "schedule": crontab(hour=23, minute=57)
+    },
+    "set_default_posts_count": {
+        "task": "background.set_default_post_count",
+        "schedule": crontab(hour=0, minute=47)
+    },
 
 }
 
