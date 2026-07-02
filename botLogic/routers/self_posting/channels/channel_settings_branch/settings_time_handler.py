@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
@@ -43,10 +44,14 @@ async def set_time(msg: Message, state: FSMContext):
     if time_validator(time_):
         ch_service = ChannelSettingsService()
         channel = await ch_service.get_channel_settings(channel_id=channel_id, tg_id=msg.chat.id)
-        channel.time.append(time_)
-        await ch_service.update_channel_time(channel)
-        await state.clear()
-        await msg.answer("Время успешно сохранено", reply_markup=buttons)
+        format_time = datetime.strptime(time_, '%H:%M').strftime('%H:%M')
+        if format_time in channel.time:
+            await msg.answer("Это время уже записано попробуй снова", reply_markup=buttons)
+        else:
+            channel.time.append(format_time)
+            await ch_service.update_channel_time(channel)
+            await state.clear()
+            await msg.answer("Время успешно сохранено", reply_markup=buttons)
     else:
         await msg.answer("Формат даты неверный, повтори поптыку ввода, или выйди в меню", reply_markup=buttons)
 

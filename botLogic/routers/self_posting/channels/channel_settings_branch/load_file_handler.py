@@ -11,11 +11,13 @@ from .keyboards.theme_kb import get_back_button_to_settings
 from .states.load_file_state import LoadFileState
 from botLogic.common_bot_tools.tools.state_cleaner import clean_state
 from botLogic.common_bot_tools.tools.file_work import FileWork
+from .function_tools.decorators import required_plan
 
 router = Router(name=__name__)
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "loadFileMenu"))
+@required_plan()
 async def request_to_load_file_menu(call: CallbackQuery, callback_data: ChannelSettingsCb):
     channel_id = callback_data.channel_id
     ext_service = ExtensionService()
@@ -26,12 +28,14 @@ async def request_to_load_file_menu(call: CallbackQuery, callback_data: ChannelS
 
 
 @router.callback_query(LoadCb.filter((F.action == "requestToDel")))
+@required_plan()
 async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
     buttons = get_request_to_del_kb(channel_id=callback_data.channel_id)
     await call.message.edit_text("Ты действительно хочешь удалить все загруженные данные ?", reply_markup=buttons)
 
 
 @router.callback_query(LoadCb.filter(F.action == "delete"))
+@required_plan()
 async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
     channel_id = callback_data.channel_id
     ext_service = ExtensionService()
@@ -44,6 +48,7 @@ async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
 
 
 @router.callback_query(LoadCb.filter(F.action == "load"))
+@required_plan()
 async def request_to_load_file(call: CallbackQuery, callback_data: LoadCb, state: FSMContext):
     channel_id = callback_data.channel_id
     buttons = get_back_button_to_settings(channel_id=channel_id)
@@ -55,6 +60,7 @@ async def request_to_load_file(call: CallbackQuery, callback_data: LoadCb, state
 
 
 @router.message(LoadFileState.wait_file_loading)
+@required_plan()
 async def load_file_handler(msg: Message, state: FSMContext):
     state_data = await state.get_data()
     channel_id = int(state_data.get("channel_id"))

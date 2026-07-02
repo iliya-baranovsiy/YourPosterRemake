@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, time
 from sqlalchemy import select, update
 
 from ..engines import async_session
 from ..payments.models import PaymentModel
-from database.channels.models import ChannelsSettingsModel
+from database.channels.models import ChannelsSettingsModel, PostsTimesModel
 
 
 class BackGroundTasksORM:
@@ -26,3 +26,13 @@ class BackGroundTasksORM:
             )
             async with session.begin():
                 await session.execute(stmt)
+
+    @staticmethod
+    async def get_current_channel_ids(current_time: str) -> list:
+        async with async_session() as session:
+            res = await session.execute(
+                select(PostsTimesModel.channel_id).where(
+                    PostsTimesModel.time == current_time
+                )
+            )
+            return res.scalars().all()
