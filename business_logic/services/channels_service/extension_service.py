@@ -32,6 +32,9 @@ class ExtensionService:
         else:
             return Status.BAD
 
+    async def update_records_count(self, channel_id: int, count: int):
+        await self.cache.add_count(channel_id=channel_id, count=count)
+
     async def delete_file_records(self, channel_id: int) -> Status:
         try:
             await self.rep.delete_file_records(channel_id=channel_id)

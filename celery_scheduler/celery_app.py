@@ -6,7 +6,7 @@ app = Celery(
     "services",
     backend=settings.get_redis,
     broker=settings.get_redis,
-    include=["celery_scheduler.tasks", "celery_scheduler.backgrounds.tasks"]
+    include=["celery_scheduler.tasks", "celery_scheduler.backgrounds.tasks", "celery_scheduler.posting.tasks"]
 )
 
 app.conf.beat_schedule = {
@@ -53,6 +53,10 @@ app.conf.beat_schedule = {
     "set_default_posts_count": {
         "task": "background.set_default_post_count",
         "schedule": crontab(hour=0, minute=47)
+    },
+    "posting": {
+        "task": "posting.posting",
+        "schedule": crontab()
     },
 
 }

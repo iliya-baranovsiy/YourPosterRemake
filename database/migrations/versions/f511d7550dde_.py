@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0932d9961720
+Revision ID: f511d7550dde
 Revises: 
-Create Date: 2026-07-03 00:14:53.768809
+Create Date: 2026-07-04 01:04:59.472377
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0932d9961720'
+revision: str = 'f511d7550dde'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -128,6 +128,13 @@ def upgrade() -> None:
     sa.UniqueConstraint('title')
     )
     op.create_index('title_drop_index_news', 'WorldNews', ['title', 'dropDate'], unique=False)
+    op.create_table('posted_news',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('channel_id', sa.BigInteger(), nullable=False),
+    sa.Column('title', sa.String(length=255), nullable=False),
+    sa.Column('post_date', sa.Date(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('Channels',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('channel_id', sa.BigInteger(), nullable=False),
@@ -190,6 +197,7 @@ def downgrade() -> None:
     op.drop_table('User_payments')
     op.drop_index('channels_index', table_name='Channels')
     op.drop_table('Channels')
+    op.drop_table('posted_news')
     op.drop_index('title_drop_index_news', table_name='WorldNews')
     op.drop_table('WorldNews')
     op.drop_index('tg_id_index', table_name='Users')

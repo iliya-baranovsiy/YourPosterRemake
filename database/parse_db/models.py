@@ -1,4 +1,5 @@
-from sqlalchemy import Date, Index, String
+from datetime import datetime
+from sqlalchemy import Date, Index, String, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 import datetime
 from database.engines import Base
@@ -77,3 +78,12 @@ class GamesTable(BaseStruct):
     __table_args__ = (
         Index('title_drop_index_games', 'title', 'dropDate'),
     )
+
+
+class PostedTable(Base):
+    __tablename__ = "posted_news"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    channel_id: Mapped[int] = mapped_column(BigInteger)
+    title: Mapped[str] = mapped_column(String(255))
+    post_date: Mapped[date] = mapped_column(Date, default=datetime.date.today)
