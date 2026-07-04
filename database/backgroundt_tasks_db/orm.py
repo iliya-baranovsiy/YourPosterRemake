@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, func
 from sqlalchemy.dialects.postgresql import insert
 
 from ..engines import async_session
@@ -84,4 +84,12 @@ class BackGroundTasksORM:
             res = await session.execute(select(FileUserModel.title, FileUserModel.content).where(
                 FileUserModel.channel_id == channel_id
             ))
+            return res.first()
+
+    async def get_news_post(self, table):
+        async with async_session() as session:
+            res = await session.execute(
+                select(table.title, table.content, table.pictureUrl).order_by(func.random())
+                .limit(1)
+            )
             return res.first()

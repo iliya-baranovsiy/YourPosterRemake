@@ -1,14 +1,16 @@
 from datetime import datetime
-
+from html import escape
 from database.backgroundt_tasks_db.orm import BackGroundTasksORM
 from business_logic.services.channels_service.channel_settings_service import ChannelSettingsService
 from business_logic.services.user_service import UserService
 from botLogic.bot_services.bot_instance import bot
 from database.payments.options import PLAN_INFO
-from business_logic.entities.channel_entity import Resource
+from business_logic.entities.channel_entity import Resource, PostTheme
 from business_logic.services.channels_service.extension_service import ExtensionService
 from database.extension_db.models import FileUserModel
 from database.extension_db.orm import ExtensionOrm
+from database.parse_db.models import AiNewsTable, ItTechnologiesTable, GamesTable, CryptoCurrencyTable, NewsTable, \
+    SportTable, ShowBisTable, ScienceTable
 
 
 class Poster:
@@ -28,8 +30,8 @@ class Poster:
             payment = await self.user_service.get_only_payment_plan(tg_id=tup[1])
             if channel.posting_is_active:
                 if channel.posts_count < PLAN_INFO[payment].posts_count:
-                    count = await self.ext_service.get_file_posts_count(channel_id=tup[0])
                     if channel.resource == Resource.FILE:
+                        count = await self.ext_service.get_file_posts_count(channel_id=tup[0])
                         if count > 0:
                             post_data = await self.orm.get_file_post(channel_id=tup[0])
                             try:
@@ -44,8 +46,62 @@ class Poster:
                         else:
                             continue
                     else:
-                        pass
+                        table = self.get_news_tabel(theme=channel.theme)
+                        posted = await self.orm.get_channel_posted_titles(channel_id=tup[0])
+                        for _ in range(3):
+                            post = await self.orm.get_news_post(table)
+                            if post:
+                                if post[0] not in posted:
+                                    if post[2] is not None:
+                                        try:
+                                            caption = f"<b>{post[0]}</b>\n{post[1]}"
+                                            await self.bot.send_photo(chat_id=tup[0],
+                                                                      caption=caption,
+                                                                      photo=post[2])
+                                            await self.orm.insert_post_title(channel_id=tup[0], title=post[0])
+                                            channel.posts_count += 1
+                                            await self.channel_service.update_channel_settings(channel=channel)
+                                            break
+                                        except Exception as e:
+                                            pass
+                                    else:
+                                        try:
+                                            caption = f"<b>{post[0]}</b>\n{post[1]}"
+                                            await self.bot.send_message(chat_id=tup[0],
+                                                                        text=caption)
+                                            await self.orm.insert_post_title(channel_id=tup[0], title=post[0])
+                                            channel.posts_count += 1
+                                            await self.channel_service.update_channel_settings(channel=channel)
+                                            break
+                                        except Exception as e:
+                                            break
+                            else:
+                                break
                 else:
                     continue
             else:
                 continue
+
+    async def start_posting(self):
+        current_time = datetime.now().time().strftime("%H:%M")
+        channels_ids = await self.orm.get_current_channel_ids(current_time=current_time)
+
+
+    def get_news_tabel(self, theme: PostTheme):
+        match (theme):
+            case PostTheme.AI_POSTS:
+                return AiNewsTable
+            case PostTheme.IT_NEWS:
+                return ItTechnologiesTable
+            case PostTheme.SPORT_NEWS:
+                return SportTable
+            case PostTheme.SCIENCE_NEWS:
+                return ScienceTable
+            case PostTheme.SHOW_BIS_NEWS:
+                return ShowBisTable
+            case PostTheme.WORLD_NEWS:
+                return NewsTable
+            case PostTheme.CRYPTO_NEWS:
+                return CryptoCurrencyTable
+            case PostTheme.GAMES_NEWS:
+                return GamesTable
