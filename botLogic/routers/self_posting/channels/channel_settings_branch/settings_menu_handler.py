@@ -9,6 +9,7 @@ from .function_tools.text import SettingsMenuText
 from botLogic.common_bot_tools.callback_data import ChannelSettingsCb
 from business_logic.services.channels_service.extension_service import ExtensionService
 from botLogic.common_bot_tools.tools.state_cleaner import clean_state
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
@@ -34,6 +35,7 @@ async def get_settings_menu(call: CallbackQuery, channel_id: int, state: FSMCont
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "openMenu"))
+@save_work()
 async def settings_menu_handler(call: CallbackQuery, callback_data: ChannelSettingsCb, state: FSMContext):
     channel_id = callback_data.channel_id
     await get_settings_menu(call=call, channel_id=channel_id, state=state)

@@ -16,8 +16,11 @@ def required_plan():
                 try:
                     await event.message.edit_text("У тебя нет доступа к этой функции")
                 except:
-                    await event.message.answer("У тебя нет доступа к этой функции")
-                await event.message.answer("Главное меню", reply_markup=buttons)
+                    await event.answer("У тебя нет доступа к этой функции")
+                try:
+                    await event.message.answer("Главное меню", reply_markup=buttons)
+                except:
+                    await event.answer("Главное меню", reply_markup=buttons)
                 return
             else:
                 return await handler(event, *args, **kwargs)

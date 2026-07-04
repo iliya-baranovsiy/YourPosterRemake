@@ -5,11 +5,13 @@ from business_logic.services.channels_service.channel_settings_service import Ch
 from business_logic.entities.channel_entity import PostTheme
 from .keyboards.theme_kb import get_theme_kb, get_back_button_to_settings
 from botLogic.common_bot_tools.callback_data import ChannelSettingsCb, ThemeCb
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "openThemeMenu"))
+@save_work()
 async def theme_menu(call: CallbackQuery, callback_data: ChannelSettingsCb):
     channel_id = callback_data.channel_id
     service = ChannelSettingsService()
@@ -19,6 +21,7 @@ async def theme_menu(call: CallbackQuery, callback_data: ChannelSettingsCb):
 
 
 @router.callback_query(ThemeCb.filter(F.action == "set"))
+@save_work()
 async def set_theme(call: CallbackQuery, callback_data: ThemeCb):
     channel_service = ChannelSettingsService()
     channel_id = callback_data.channel_id

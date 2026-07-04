@@ -9,6 +9,7 @@ from business_logic.services.subscribe_service.subscribe_service import Subscrib
 from .keyboards.confirm_pay_kb import get_confirm_kb
 from botLogic.common_bot_tools.tools.state_cleaner import clean_state
 from .states.pricing_state import PricingState
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
@@ -23,11 +24,13 @@ async def get_payments_plans_menu(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "payment_plans")
+@save_work()
 async def payments_plans_menu(call: CallbackQuery, state: FSMContext):
     await get_payments_plans_menu(call=call, state=state)
 
 
 @router.callback_query(F.data.startswith("plan"))
+@save_work()
 async def handle_wishful_plan(call: CallbackQuery, state: FSMContext):
     wishful_plan = call.data.split("_")[1]
     service = SubscribeService()
@@ -39,6 +42,7 @@ async def handle_wishful_plan(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "confirm", PricingState.confirm_to_pay)
+@save_work()
 async def confirm_handler(call: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     new_plan = state_data.get("new_plan")
@@ -51,11 +55,13 @@ async def confirm_handler(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "not_confirm")
+@save_work()
 async def not_confirm_handler(call: CallbackQuery, state: FSMContext):
     await get_payments_plans_menu(call=call, state=state)
 
 
 @router.callback_query(F.data == "self_buy_turn_on")
+@save_work()
 async def turn_on_self_buy(call: CallbackQuery):
     sub_service = SubscribeService()
     await sub_service.switch_on_self_buy(call.message.chat.id)
@@ -66,6 +72,7 @@ async def turn_on_self_buy(call: CallbackQuery):
 
 
 @router.callback_query(F.data.startswith("menu_self_buy_"))
+@save_work()
 async def switch_self_buy(call: CallbackQuery, state: FSMContext):
     wishful_position = call.data.split("_")[3]
     sub_service = SubscribeService()
@@ -74,6 +81,7 @@ async def switch_self_buy(call: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data == "cancel_movement")
+@save_work()
 async def cancel_movement(call: CallbackQuery, state: FSMContext):
     sub_service = SubscribeService()
     await sub_service.cancel_movement(call.message.chat.id)

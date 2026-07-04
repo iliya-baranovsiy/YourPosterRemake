@@ -4,11 +4,13 @@ from aiogram.fsm.context import FSMContext
 
 from business_logic.services.channels_service.channels_service import ChannelsService
 from .keyboards.menu_kb import MenuKb
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
 
 @router.callback_query(F.data == "channels")
+@save_work()
 async def get_channels_menu(call: CallbackQuery, state: FSMContext):
     await state.clear()
     service = ChannelsService()

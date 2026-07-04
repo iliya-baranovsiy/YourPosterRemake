@@ -9,11 +9,13 @@ from .keyboards.time_kb import TimeKb, back_to_time_menu, request_to_delete_time
 from .function_tools.time_validator import time_validator
 from .states.time_input_state import WaitTime
 from botLogic.common_bot_tools.callback_data import ChannelSettingsCb, TimeCb
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "openTimeList"))
+@save_work()
 async def get_channel_times_menu(call: CallbackQuery, state: FSMContext, callback_data: ChannelSettingsCb):
     await state.clear()
     channel_id = callback_data.channel_id
@@ -27,6 +29,7 @@ async def get_channel_times_menu(call: CallbackQuery, state: FSMContext, callbac
 
 
 @router.callback_query(TimeCb.filter(F.action == "addTime"))
+@save_work()
 async def request_to_time(call: CallbackQuery, state: FSMContext, callback_data: TimeCb):
     channel_id = callback_data.channel_id
     buttons = back_to_time_menu(channel_id=channel_id)
@@ -36,6 +39,7 @@ async def request_to_time(call: CallbackQuery, state: FSMContext, callback_data:
 
 
 @router.message(WaitTime.wait_time_input)
+@save_work()
 async def set_time(msg: Message, state: FSMContext):
     time_ = msg.text
     state_data = await state.get_data()
@@ -57,6 +61,7 @@ async def set_time(msg: Message, state: FSMContext):
 
 
 @router.callback_query(TimeCb.filter(F.action == "openTime"))
+@save_work()
 async def request_to_drop_time(call: CallbackQuery, callback_data: TimeCb):
     channel_id = callback_data.channel_id
     time_ = callback_data.time_.replace("-", ":")
@@ -65,6 +70,7 @@ async def request_to_drop_time(call: CallbackQuery, callback_data: TimeCb):
 
 
 @router.callback_query(TimeCb.filter(F.action == "dropTime"))
+@save_work()
 async def drop_time_handler(call: CallbackQuery, callback_data: TimeCb):
     channel_service = ChannelSettingsService()
     channel_id = callback_data.channel_id

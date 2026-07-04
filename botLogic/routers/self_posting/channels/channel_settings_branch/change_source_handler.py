@@ -7,6 +7,7 @@ from business_logic.services.channels_service.channel_settings_service import Ch
 from business_logic.services.user_service import UserService
 from .keyboards.theme_kb import get_back_button_to_settings
 from .function_tools.decorators import required_plan
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
@@ -23,12 +24,14 @@ async def get_change_source_menu(call: CallbackQuery, channel_id: int, tg_id: in
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "changeSource"))
 @required_plan()
+@save_work()
 async def change_source_menu_handler(call: CallbackQuery, callback_data: ChannelSettingsCb):
     await get_change_source_menu(call=call, channel_id=callback_data.channel_id, tg_id=call.message.chat.id)
 
 
 @router.callback_query(ResourceCb.filter(F.action == "set"))
 @required_plan()
+@save_work()
 async def set_source_handler(call: CallbackQuery, callback_data: ResourceCb):
     channel_id = callback_data.channel_id
     wishful_resource = callback_data.resource

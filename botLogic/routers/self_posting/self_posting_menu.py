@@ -4,11 +4,13 @@ from aiogram.types.callback_query import CallbackQuery
 from .commom_self_posting_tools.keyboards.self_posting_menu_kb import get_self_posting_menu_kb
 from business_logic.services.user_service import UserService
 from .commom_self_posting_tools.help_functions.menu_text import get_menu_text
+from botLogic.common_bot_tools.tools.decorators import save_work
 
 router = Router(name=__name__)
 
 
 @router.callback_query(F.data == "autoposting_menu")
+@save_work()
 async def self_posting_menu(call: CallbackQuery):
     user_service = UserService()
     user = await user_service.get_user(call.message.chat.id)
