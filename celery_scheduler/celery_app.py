@@ -58,6 +58,10 @@ app.conf.beat_schedule = {
         "task": "posting.posting",
         "schedule": crontab()
     },
+    "clean_old_posted_data": {
+        "task": "tasks.clean_old_posted_data",
+        "schedule": crontab(hour=14, minute=47)
+    },
 
 }
 

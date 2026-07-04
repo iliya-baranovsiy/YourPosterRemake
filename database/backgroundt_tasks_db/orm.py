@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from sqlalchemy import select, update, delete, func
 from sqlalchemy.dialects.postgresql import insert
 
@@ -93,3 +93,14 @@ class BackGroundTasksORM:
                 .limit(1)
             )
             return res.first()
+
+    @staticmethod
+    async def clear_old_posts_data():
+        async with async_session() as session:
+            drop_date = date.today() - timedelta(days=5)
+            await session.execute(
+                delete(PostedTable).where(
+                    PostedTable.post_date == drop_date
+                )
+            )
+            await session.commit()
