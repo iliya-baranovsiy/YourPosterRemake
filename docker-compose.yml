@@ -5,7 +5,9 @@ services:
     build: .
     container_name: tg_bot_api
     env_file:
-      - .env
+      - .env.prod
+    environment:
+      TZ: Europe/Moscow
     ports:
       - "8000:8000"
     depends_on:
@@ -29,7 +31,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -41,6 +43,11 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --save "" --appendonly no
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "127.0.0.1", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   mongo:
     image: mongo:7
@@ -53,6 +60,58 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
+  celery_parsing:
+    build: .
+    container_name: celery_parsing
+    restart: always
+    env_file:
+      - .env.prod
+    environment:
+      TZ: Europe/Moscow
+    command: celery -A celery_scheduler.celery_app worker -Q parsing -n parsing@%h --concurrency=2 --pool=prefork --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  celery_background:
+    build: .
+    container_name: celery_background
+    restart: always
+    env_file:
+      - .env.prod
+    environment:
+      TZ: Europe/Moscow
+    command: celery -A celery_scheduler.celery_app worker -Q background_tasks -n background@%h --concurrency=4 --pool=prefork --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  celery_posting:
+    build: .
+    container_name: celery_posting
+    restart: always
+    env_file:
+      - .env.prod
+    environment:
+      TZ: Europe/Moscow
+    command: celery -A celery_scheduler.celery_app worker -Q posting_tasks -n posting@%h --concurrency=2 --pool=prefork --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    restart: always
+    env_file:
+      - .env.prod
+    environment:
+      TZ: Europe/Moscow
+    command: celery -A celery_scheduler.celery_app beat --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
 
 volumes:
   pg_data:
