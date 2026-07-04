@@ -40,6 +40,8 @@ class ChannelsSettingsModel(Base):
                                                default=Resource.DATABASE,
                                                server_default=text("'DATABASE'"))
 
+    __table_args__ = (Index("channels_settings_index", "channel_id"),)
+
 
 class PostsTimesModel(Base):
     __tablename__ = "PostsTimes"
@@ -49,3 +51,5 @@ class PostsTimesModel(Base):
     time: Mapped[str]
 
     channel: Mapped["ChannelsModel"] = relationship("ChannelsModel", back_populates="times")
+
+    __table_args__ = (Index("channels_times_index", "channel_id", "time"),)
