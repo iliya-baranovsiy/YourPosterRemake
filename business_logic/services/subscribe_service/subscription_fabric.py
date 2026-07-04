@@ -44,8 +44,10 @@ class Buy(BaseSubFabric):
 
 class Renew(BaseSubFabric):
     async def get_confirmation_text(self, new_plan):
-        text = (f"Уверены ли Вы, что хотите продлить тариф {new_plan.value}, "
-                f"стоимостью {PLAN_INFO[new_plan].price.quantize(Decimal("0.00"))}$ сроком на 31 день ?")
+        text = (f"💎 Продление тарифа {new_plan.value}\n\n"
+                f"<b>Стоимость:</b> {PLAN_INFO[new_plan].price.quantize(Decimal("0.00"))}$\n"
+                f"<b>Срок:</b> 31 день\n\n"
+                f"Подтвердить продление ?")
         data = ActionData(text=text, action=Action.RENEW)
         return data
 

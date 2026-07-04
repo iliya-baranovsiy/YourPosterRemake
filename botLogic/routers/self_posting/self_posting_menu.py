@@ -16,4 +16,4 @@ async def self_posting_menu(call: CallbackQuery):
     user = await user_service.get_user(call.message.chat.id)
     text = get_menu_text(user)
     buttons = get_self_posting_menu_kb()
-    await call.message.edit_text("Меню автопостинга\n" + text, reply_markup=buttons)
+    await call.message.edit_text("📝 Автопостинг\n" + text, reply_markup=buttons)

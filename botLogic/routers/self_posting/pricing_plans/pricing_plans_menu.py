@@ -20,7 +20,7 @@ async def get_payments_plans_menu(call: CallbackQuery, state: FSMContext):
     user = await user_service.get_user(call.message.chat.id)
     text = get_pricing_plan_text(user)
     buttons = get_plans_kb(user=user)
-    await call.message.edit_text("Меню тарифов, твои текущие данные:\n" + text, reply_markup=buttons)
+    await call.message.edit_text("💎 Управление тарифом\n" + text, reply_markup=buttons)
 
 
 @router.callback_query(F.data == "payment_plans")

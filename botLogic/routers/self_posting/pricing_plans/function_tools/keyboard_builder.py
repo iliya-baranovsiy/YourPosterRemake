@@ -14,17 +14,17 @@ class KeyboardBuilder:
 
     def add_pro_button(self):
         self.base_kb.append(
-            [InlineKeyboardButton(text="PRO", callback_data="plan_PRO")]
+            [InlineKeyboardButton(text="⭐ PRO", callback_data="plan_PRO")]
         )
 
     def add_switch_self_pay_btn(self, self_buy: bool):
         if self_buy:
             self.base_kb.append(
-                [InlineKeyboardButton(text="Выкл автопокупку", callback_data="menu_self_buy_off")]
+                [InlineKeyboardButton(text="🔄 Автопродление: выкл", callback_data="menu_self_buy_off")]
             )
         else:
             self.base_kb.append(
-                [InlineKeyboardButton(text="Вкл автопокупку", callback_data="menu_self_buy_on")]
+                [InlineKeyboardButton(text="🔄 Автопродление: вкл", callback_data="menu_self_buy_on")]
             )
 
     def add_off_move_button(self):
@@ -34,7 +34,7 @@ class KeyboardBuilder:
 
     def add_back_button(self):
         self.base_kb.append(
-            [InlineKeyboardButton(text="Назад", callback_data="autoposting_menu")]
+            [InlineKeyboardButton(text="Назад ◀️", callback_data="autoposting_menu")]
         )
 
 

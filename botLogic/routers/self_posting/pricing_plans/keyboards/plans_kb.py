@@ -10,6 +10,6 @@ def get_plans_kb(user):
 
 def get_back_to_plans():
     kb = [
-        [InlineKeyboardButton(text="Назад", callback_data="payment_plans")]
+        [InlineKeyboardButton(text="Назад ◀️", callback_data="payment_plans")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=kb)

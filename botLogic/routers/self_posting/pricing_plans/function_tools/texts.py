@@ -9,9 +9,11 @@ from database.payments.options import PaymentOptions
 
 
 def get_pricing_plan_text(user: User) -> str:
-    text = (f"<b>Тариф:</b> {user.subscription.payment_plan_str}\n"
-            f"<b>Действует по:</b> {user.subscription.end_date}\n"
-            f"<b>Баланс:</b> {user.balance}\n")
+    text = (f"⭐ <b>Текущий тариф:</b> {user.subscription.payment_plan_str}\n"
+            f"📅 <b>Активен до:</b> {user.subscription.end_date}\n"
+            f"💰 <b>Баланс:</b> {user.balance}\n"
+            f"🔄 <b>Автопродление:</b> {'вкл' if user.automatic_buy else 'выкл'}\n"
+            f"Выберите действие ниже.\n")
     if user.subscription.pending_plan != user.subscription.payment_plan and user.subscription.pending_plan != PaymentOptions.STANDART:
         text += f"<b>Запланирован переход к тарифу {user.subscription.pending_plan.value}</b>"
     return text
@@ -20,12 +22,12 @@ def get_pricing_plan_text(user: User) -> str:
 def get_result_answer(description: DescriptionStatus) -> Answer:
     if description.status == Status.OK and description.action == Action.RENEW:
         """RENEW"""
-        text = f"Твой тариф успешно продлен"
+        text = f"✅ Подписка успешно продлена!\n\nСпасибо за использование YourPoster. Приятной работы! 🚀"
         buttons = get_back_to_plans()
         return Answer(text=text, buttons=buttons)
     elif description.status == Status.OK and description.action != Action.DOWNGRADE:
         """BUY/UPGRADE"""
-        text = f"Желаете ли вы включить атоматическое списывание ?"
+        text = f"🔄 Включить автопродление подписки?\n\nПри включенном автопродлении стоимость тарифа будет автоматически списываться с вашего баланса при окончании текущего периода."
         buttons = get_self_buy_buttons()
         return Answer(text=text, buttons=buttons)
     elif description.status == Status.OK and description.action == Action.DOWNGRADE:
