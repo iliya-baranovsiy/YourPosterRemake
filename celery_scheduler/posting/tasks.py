@@ -24,4 +24,4 @@ def posting():
 
 async def run_posting():
     poster = Poster()
-    await poster.make_post()
+    await poster.start_posting()
