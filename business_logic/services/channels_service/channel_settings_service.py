@@ -21,7 +21,8 @@ class ChannelSettingsService:
                                                       time=settings.time,
                                                       theme=settings.theme,
                                                       posts_count=settings.posts_count,
-                                                      resource=settings.resource, )
+                                                      resource=settings.resource,
+                                                      posting_is_active=settings.posting_is_active)
         payment_plan = await self.user.get_only_payment_plan(tg_id=tg_id)
         settings.posts_available_count = PLAN_INFO[payment_plan].posts_count
         return settings
