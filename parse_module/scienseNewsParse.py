@@ -1,5 +1,6 @@
 from .baseSettings import BaseParse
 from database.parse_db.models import ScienceTable
+from .parseTools.ai_prompt import ai_generate
 
 
 class ScienceParsing(BaseParse):
@@ -19,8 +20,8 @@ class ScienceParsing(BaseParse):
             return 0
         else:
             content_div = soup.find('div', class_=['entry-content entry clearfix'])
-            # input ai generate func
-            content = ''.join([i.text for i in content_div.find_all('p')])
+            content_row = ''.join([i.text for i in content_div.find_all('p')])
+            content = ai_generate(content_row[:1500])
             try:
                 pic_url = self.url + soup.find('img', class_=[
                     'attachment-jannah-image-post size-jannah-image-post wp-post-image']).attrs['src']

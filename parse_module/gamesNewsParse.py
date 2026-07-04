@@ -1,5 +1,6 @@
 from database.parse_db.models import GamesTable
 from .baseSettings import BaseParse
+from .parseTools.ai_prompt import ai_generate
 
 
 class GamesParsing(BaseParse):
@@ -26,8 +27,8 @@ class GamesParsing(BaseParse):
         else:
             content_div = soup.find('div', class_=['article-content js-post-item-content js-redirect'])
             paragraphs = content_div.find_all('p')
-            # input ai_generate func
-            content = ''.join([i.text for i in paragraphs])
+            content_row = ''.join([i.text for i in paragraphs])
+            content = ai_generate(content_row[:1500])
             try:
                 pic_url = content_div.find('figure').find('a', href=True).attrs['href']
             except:

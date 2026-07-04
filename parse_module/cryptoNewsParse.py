@@ -1,5 +1,6 @@
 from database.parse_db.models import CryptoCurrencyTable
 from .baseSettings import BaseParse
+from .parseTools.ai_prompt import ai_generate
 
 
 class CryptoNewsParsing(BaseParse):
@@ -20,8 +21,8 @@ class CryptoNewsParsing(BaseParse):
             return 0
         else:
             paragraphs = soup.find_all('p')
-            # input ai generate func
-            content = ''.join([i.text for i in paragraphs])
+            content_row = ''.join([i.text for i in paragraphs])
+            content = ai_generate(content_row[:1500])
             try:
                 pic_url = soup.find('img', class_=['attachment-full size-full wp-post-image']).attrs['src']
             except:

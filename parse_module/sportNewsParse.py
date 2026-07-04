@@ -1,5 +1,6 @@
 from .baseSettings import BaseParse
 from database.parse_db.models import SportTable
+from .parseTools.ai_prompt import ai_generate
 
 
 class SportNewsParsing(BaseParse):
@@ -30,9 +31,9 @@ class SportNewsParsing(BaseParse):
         else:
             article_content = soup.find('div', class_=['article-content'])
             content_paragraphs = article_content.find_all('p')
-            # input ai_generate func
-            content = ''.join(
+            content_row = ''.join(
                 [i.text for i in content_paragraphs if not i.find_parent('div', class_=['content-photo'])])
+            content = ai_generate(content_row[:1500])
             try:
                 article_photo_div = soup.find('div', class_=['article-head__photo'])
                 picture_url = article_photo_div.find('img').attrs['src']

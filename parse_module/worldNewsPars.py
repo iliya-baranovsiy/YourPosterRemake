@@ -1,5 +1,6 @@
 from .baseSettings import BaseParse
 from database.parse_db.models import NewsTable
+from .parseTools.ai_prompt import ai_generate
 
 
 class WorldNewsParsing(BaseParse):
@@ -30,8 +31,8 @@ class WorldNewsParsing(BaseParse):
             content_list[0].find('strong').decompose()
             for i in content_list:
                 content += i.text
-            # input ai_generate func
-            result_content = content.lstrip()
+            result_content_row = content.lstrip()
+            result_content = ai_generate(result_content_row[:1500])
             try:
                 pic_url = soup.find('div', class_=['photoview__open']).find('img').attrs['src']
             except:
