@@ -11,7 +11,7 @@ from database.payments.options import PaymentOptions
 def get_pricing_plan_text(user: User) -> str:
     text = (f"⭐ <b>Текущий тариф:</b> {user.subscription.payment_plan_str}\n"
             f"📅 <b>Активен до:</b> {user.subscription.end_date}\n"
-            f"💰 <b>Баланс:</b> {user.balance}\n"
+            f"💰 <b>Баланс:</b> {user.balance}$\n"
             f"🔄 <b>Автопродление:</b> {'вкл' if user.automatic_buy else 'выкл'}\n"
             f"Выберите действие ниже.\n")
     if user.subscription.pending_plan != user.subscription.payment_plan and user.subscription.pending_plan != PaymentOptions.STANDART:
@@ -36,6 +36,6 @@ def get_result_answer(description: DescriptionStatus) -> Answer:
         buttons = get_back_to_plans()
         return Answer(text=text, buttons=buttons)
     else:
-        text = "Упс, что-то пошло не так, попробуй проверить свой баланс и повтори действие"
+        text = "❌ Не удалось выполнить операцию.\n\nПроверьте баланс и попробуйте снова."
         buttons = get_back_to_plans()
         return Answer(text=text, buttons=buttons)

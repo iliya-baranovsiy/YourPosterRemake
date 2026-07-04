@@ -30,8 +30,9 @@ class BaseSubFabric(ABC):
 
 class Buy(BaseSubFabric):
     async def get_confirmation_text(self, new_plan):
-        text = (f"Уверены ли Вы, что хотите приобрести тариф {new_plan.value}, "
-                f"стоимостью {PLAN_INFO[new_plan].price.quantize(Decimal("0.00"))}$ сроком на 31 день ?")
+        text = (f"💎 Приобрести тариф <b>{new_plan.value}</b> ?\n"
+                f"💳 <b>Стоимость:</b> {PLAN_INFO[new_plan].price.quantize(Decimal("0.00"))}$ ?"
+                f"Подтвердите покупку.")
         data = ActionData(text=text, action=Action.BUY)
         return data
 

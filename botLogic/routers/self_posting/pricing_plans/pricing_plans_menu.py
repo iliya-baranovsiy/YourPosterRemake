@@ -67,7 +67,7 @@ async def turn_on_self_buy(call: CallbackQuery):
     await sub_service.switch_on_self_buy(call.message.chat.id)
     buttons = get_back_to_plans()
     await call.message.edit_text(
-        text="Тариф будет продлеваться атоматически, ты влюбое время можешь выключить эту функцию",
+        text="🔄 Автопродление успешно включено.\n\nПо окончании текущего периода подписка будет продлеваться автоматически. Отключить автопродление можно в любое время.",
         reply_markup=buttons)
 
 
