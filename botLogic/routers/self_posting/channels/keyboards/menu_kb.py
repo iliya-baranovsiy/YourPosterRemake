@@ -15,14 +15,14 @@ class MenuKbBuilder:
                                                      ).pack())])
 
     def create_add_channel_button(self):
-        self.kb_buttons.append([InlineKeyboardButton(text="Добавить канал",
+        self.kb_buttons.append([InlineKeyboardButton(text="➕ Добавить канал",
                                                      callback_data=ChannelCb(
                                                          channel_id=0,
                                                          action="addChannel",
                                                      ).pack())])
 
     def create_back_button(self):
-        self.kb_buttons.append([InlineKeyboardButton(text="Назад", callback_data="autoposting_menu")])
+        self.kb_buttons.append([InlineKeyboardButton(text="◀️ Назад", callback_data="autoposting_menu")])
 
 
 class MenuKb:

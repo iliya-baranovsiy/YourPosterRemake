@@ -3,8 +3,8 @@ from database.payments.options import PaymentOptions
 
 
 def get_settings_menu_text(data: ChannelSettings):
-    text = (f"Меню канала: {data.channel_name}\n"
-            f"Доступных постов: {data.posts_available_count - data.posts_count}/{data.posts_available_count}")
+    text = (f"📢 <b>{data.channel_name}</b>\n"
+            f"📝 <b>Доступно публикаций:</b> {data.posts_available_count - data.posts_count} из {data.posts_available_count}")
     return text
 
 

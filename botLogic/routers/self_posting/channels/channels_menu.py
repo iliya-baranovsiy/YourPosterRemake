@@ -18,5 +18,5 @@ async def get_channels_menu(call: CallbackQuery, state: FSMContext):
     menu_kb = MenuKb(data=data)
     buttons = menu_kb.create_kb()
     await call.message.edit_text(
-        f"Мои каналы\nДоступно для привязки: {data.channels_available_count - data.channels_count}",
+        f"📢 Управление каналами\n<b>Доступных слотов:</b> {data.channels_available_count - data.channels_count}",
         reply_markup=buttons)

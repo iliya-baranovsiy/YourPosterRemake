@@ -10,21 +10,21 @@ class KeyboardBuilder:
         self.kb.append([InlineKeyboardButton(text="Сделать пост", callback_data="make_post")])
 
     def create_settings_button(self, channel_id: int):
-        self.kb.append([InlineKeyboardButton(text="Настройки постинга",
+        self.kb.append([InlineKeyboardButton(text="⚙️ Настройки постинга",
                                              callback_data=ChannelSettingsCb(
                                                  channel_id=channel_id,
                                                  action="openMenu", ).pack())])
 
     def create_delete_button(self, channel_id: int):
         self.kb.append(
-            [InlineKeyboardButton(text="Отвязать канал",
+            [InlineKeyboardButton(text="🗑️ Отвязать канал",
                                   callback_data=ChannelCb(
                                       channel_id=channel_id,
                                       action="requestToDrop"
                                   ).pack())])
 
     def create_back_button(self):
-        self.kb.append([InlineKeyboardButton(text="Назад", callback_data="channels")])
+        self.kb.append([InlineKeyboardButton(text="◀️ Назад", callback_data="channels")])
 
 
 class MenuKb:

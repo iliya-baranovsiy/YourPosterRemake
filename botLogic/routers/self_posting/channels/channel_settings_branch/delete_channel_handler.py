@@ -15,7 +15,8 @@ router = Router(name=__name__)
 async def request_to_delete(call: CallbackQuery, callback_data: ChannelCb):
     channel_id = callback_data.channel_id
     buttons = get_request_kb_for_delete(channel_id=channel_id)
-    await call.message.edit_text("Ты действительно хочешь отвязать этот канал ?", reply_markup=buttons)
+    await call.message.edit_text("🔌 Отвязать канал?\n\nПосле подтверждения канал будет удален из YourPoster.",
+                                 reply_markup=buttons)
 
 
 @router.callback_query(ChannelCb.filter(F.action == "deleteChannel"))
