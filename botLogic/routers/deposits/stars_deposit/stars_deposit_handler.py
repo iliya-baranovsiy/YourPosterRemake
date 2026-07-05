@@ -73,7 +73,7 @@ async def successful_payment(message: Message, state: FSMContext):
         await message.answer(
             text=(
                 f"✅ Платеж успешно выполнен.\n\n"
-                f"На баланс зачислено: <b>{amount} ⭐</b>.\n\n"
+                f"Списано: <b>{amount} ⭐</b>.\n\n"
                 "Для продолжения вернитесь в главное меню."
             ),
             reply_markup=get_main_menu_button()
