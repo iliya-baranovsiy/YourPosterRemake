@@ -25,7 +25,7 @@ async def get_channel_times_menu(call: CallbackQuery, state: FSMContext, callbac
     channel = await channel_settings_s.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     kb = TimeKb(channel_id=channel_id, times=channel.time, payment_plan=payment_plan)
     buttons = kb.get_time_kb()
-    await call.message.edit_text("Меню времени", reply_markup=buttons)
+    await call.message.edit_text("🕒 Время публикации", reply_markup=buttons)
 
 
 @router.callback_query(TimeCb.filter(F.action == "addTime"))
@@ -33,7 +33,7 @@ async def get_channel_times_menu(call: CallbackQuery, state: FSMContext, callbac
 async def request_to_time(call: CallbackQuery, state: FSMContext, callback_data: TimeCb):
     channel_id = callback_data.channel_id
     buttons = back_to_time_menu(channel_id=channel_id)
-    await call.message.edit_text("Введи время в формате чч:мм", reply_markup=buttons)
+    await call.message.edit_text("🕒 Введите время в формате ЧЧ:ММ.\n\nНапример: 14:00", reply_markup=buttons)
     await state.update_data(channel_id=channel_id)
     await state.set_state(WaitTime.wait_time_input)
 
@@ -50,14 +50,14 @@ async def set_time(msg: Message, state: FSMContext):
         channel = await ch_service.get_channel_settings(channel_id=channel_id, tg_id=msg.chat.id)
         format_time = datetime.strptime(time_, '%H:%M').strftime('%H:%M')
         if format_time in channel.time:
-            await msg.answer("Это время уже записано попробуй снова", reply_markup=buttons)
+            await msg.answer("ℹ️ Это время уже добавлено.\n\nВведите другое время.", reply_markup=buttons)
         else:
             channel.time.append(format_time)
             await ch_service.update_channel_time(channel)
             await state.clear()
-            await msg.answer("Время успешно сохранено", reply_markup=buttons)
+            await msg.answer("✅ Время успешно добавлено.", reply_markup=buttons)
     else:
-        await msg.answer("Формат даты неверный, повтори поптыку ввода, или выйди в меню", reply_markup=buttons)
+        await msg.answer("⚠️ Неверный формат времени.\n\nПопробуйте снова или вернитесь в меню.", reply_markup=buttons)
 
 
 @router.callback_query(TimeCb.filter(F.action == "openTime"))
@@ -66,7 +66,7 @@ async def request_to_drop_time(call: CallbackQuery, callback_data: TimeCb):
     channel_id = callback_data.channel_id
     time_ = callback_data.time_.replace("-", ":")
     buttons = request_to_delete_time(channel_id=channel_id, time_=time_)
-    await call.message.edit_text(f"Ты действительно хочешь удалить время {time_} из списка ?", reply_markup=buttons)
+    await call.message.edit_text(f"🗑️ Удалить время <b>{time_}</b>?\n\nПосле подтверждения публикации в это время больше не будут выполняться.", reply_markup=buttons)
 
 
 @router.callback_query(TimeCb.filter(F.action == "dropTime"))
@@ -79,4 +79,4 @@ async def drop_time_handler(call: CallbackQuery, callback_data: TimeCb):
     channel.time.remove(time_)
     await channel_service.update_channel_time(channel)
     buttons = back_to_time_menu(channel_id=channel_id)
-    await call.message.edit_text("Время успешно удалено", reply_markup=buttons)
+    await call.message.edit_text("✅ Время успешно удалено из расписания.", reply_markup=buttons)

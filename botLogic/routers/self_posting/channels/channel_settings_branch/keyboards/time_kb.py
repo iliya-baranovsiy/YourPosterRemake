@@ -20,7 +20,7 @@ class TimeKbBuilder:
 
     def create_add_time_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Добавить время",
+            [InlineKeyboardButton(text="➕ Добавить время",
                                   callback_data=TimeCb(
                                       channel_id=self.channel_id,
                                       time_="undefined",
@@ -30,7 +30,7 @@ class TimeKbBuilder:
 
     def create_back_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Назад",
+            [InlineKeyboardButton(text="◀️ Назад",
                                   callback_data=ChannelSettingsCb(
                                       channel_id=self.channel_id,
                                       action="openMenu", ).pack())]
@@ -57,7 +57,7 @@ class TimeKb:
 
 def back_to_time_menu(channel_id: int):
     kb = [
-        [InlineKeyboardButton(text="Назад", callback_data=ChannelSettingsCb(
+        [InlineKeyboardButton(text="◀️ Назад", callback_data=ChannelSettingsCb(
             action="openTimeList",
             channel_id=channel_id, ).pack())]
     ]
@@ -68,13 +68,13 @@ def request_to_delete_time(channel_id: int, time_: str):
     time_to_cl = time_.replace(":", "-")
     kb = [
         [
-            InlineKeyboardButton(text="Да",
+            InlineKeyboardButton(text="✅ Удалить",
                                  callback_data=TimeCb(
                                      channel_id=channel_id,
                                      time_=time_to_cl,
                                      action="dropTime",
                                  ).pack()),
-            InlineKeyboardButton(text="Нет", callback_data=ChannelSettingsCb(
+            InlineKeyboardButton(text="❌ Отмена", callback_data=ChannelSettingsCb(
                 action="openTimeList",
                 channel_id=channel_id, ).pack())
         ]

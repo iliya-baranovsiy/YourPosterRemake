@@ -6,14 +6,14 @@ from botLogic.common_bot_tools.callback_data import ThemeCb, ChannelCb, ChannelS
 def get_theme_kb(channel_id: int, theme: PostTheme):
     kb = [
         [
-            InlineKeyboardButton(text="Игры",
+            InlineKeyboardButton(text="🎮 Игры",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
                                      theme=f"{theme.GAMES_NEWS.kb_value}",
                                  ).pack()
                                  ),
-            InlineKeyboardButton(text="ИИ",
+            InlineKeyboardButton(text="🤖 ИИ",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
@@ -22,14 +22,14 @@ def get_theme_kb(channel_id: int, theme: PostTheme):
                                  ),
         ],
         [
-            InlineKeyboardButton(text="IT",
+            InlineKeyboardButton(text="💻 IT",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
                                      theme=f"{theme.IT_NEWS.kb_value}",
                                  ).pack()
                                  ),
-            InlineKeyboardButton(text="Криптовалюта",
+            InlineKeyboardButton(text="₿ Криптовалюты",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
@@ -37,13 +37,13 @@ def get_theme_kb(channel_id: int, theme: PostTheme):
                                  ).pack()),
         ],
         [
-            InlineKeyboardButton(text="Новости мира",
+            InlineKeyboardButton(text="🌍 Мир",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
                                      theme=f"{theme.WORLD_NEWS.kb_value}",
                                  ).pack()),
-            InlineKeyboardButton(text="Шоу бизнес",
+            InlineKeyboardButton(text="🎬 Шоу-бизнес",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
@@ -52,21 +52,21 @@ def get_theme_kb(channel_id: int, theme: PostTheme):
                                  ),
         ],
         [
-            InlineKeyboardButton(text="Спорт",
+            InlineKeyboardButton(text="⚽ Спорт",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
                                      theme=f"{theme.SPORT_NEWS.kb_value}",
                                  ).pack()
                                  ),
-            InlineKeyboardButton(text="Наука",
+            InlineKeyboardButton(text="🔬 Наука",
                                  callback_data=ThemeCb(
                                      action="set",
                                      channel_id=channel_id,
                                      theme=f"{theme.SCIENCE_NEWS.kb_value}",
                                  ).pack()),
         ],
-        [InlineKeyboardButton(text="Назад",
+        [InlineKeyboardButton(text="◀️ Назад",
                               callback_data=ChannelSettingsCb(
                                   channel_id=channel_id,
                                   action="openMenu", ).pack())]

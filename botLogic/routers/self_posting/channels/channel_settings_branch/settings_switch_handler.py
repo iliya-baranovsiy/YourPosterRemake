@@ -19,7 +19,7 @@ async def activate_self_posting(call: CallbackQuery, callback_data: ChannelSetti
     channel.posting_is_active = True
     await channels_set_srvice.update_channel_settings(channel)
     await get_settings_menu(call=call, channel_id=channel_id, state=state)
-    await call.answer(text="Постинг активирован", show_alert=True)
+    await call.answer(text="▶️ Постинг запущен.", show_alert=True)
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "deactivatePosting"))
@@ -31,4 +31,4 @@ async def deactivate_self_posting(call: CallbackQuery, callback_data: ChannelSet
     channel.posting_is_active = False
     await channels_set_srvice.update_channel_settings(channel)
     await get_settings_menu(call=call, channel_id=channel_id, state=state)
-    await call.answer(text="Постинг выключен", show_alert=True)
+    await call.answer(text="⏸️ Постинг остановлен.", show_alert=True)

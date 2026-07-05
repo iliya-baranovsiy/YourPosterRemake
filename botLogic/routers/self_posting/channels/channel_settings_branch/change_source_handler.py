@@ -19,7 +19,7 @@ async def get_change_source_menu(call: CallbackQuery, channel_id: int, tg_id: in
     channel_settings = await channel_settings_service.get_channel_settings(channel_id=channel_id,
                                                                            tg_id=tg_id)
     buttons = SourceKb(data=channel_settings, payment_plan=payment_plan).get_kb()
-    await call.message.edit_text(text="Доступные ресурсы", reply_markup=buttons)
+    await call.message.edit_text(text="🔄 Источник данных\n\nВыберите источник для публикаций.", reply_markup=buttons)
 
 
 @router.callback_query(ChannelSettingsCb.filter(F.action == "changeSource"))
@@ -41,7 +41,7 @@ async def set_source_handler(call: CallbackQuery, callback_data: ResourceCb):
         channel.resource = wishful_resource
         await channel_settings_service.update_channel_settings(channel)
         await get_change_source_menu(call=call, channel_id=channel_id, tg_id=call.message.chat.id)
-        await call.answer(text="Ресурс изменен", show_alert=True)
+        await call.answer(text="✅ Источник данных изменен.", show_alert=True)
     except Exception as e:
         buttons = get_back_button_to_settings(channel_id=channel_id)
-        await call.message.edit_text("Упс, что-то пошло не так", reply_markup=buttons)
+        await call.message.edit_text("⚠️ Не удалось выполнить операцию.\n\nПопробуйте еще раз.", reply_markup=buttons)

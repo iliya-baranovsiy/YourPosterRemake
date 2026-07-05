@@ -17,7 +17,7 @@ async def theme_menu(call: CallbackQuery, callback_data: ChannelSettingsCb):
     service = ChannelSettingsService()
     data = await service.get_channel_settings(channel_id=channel_id, tg_id=call.message.chat.id)
     buttons = get_theme_kb(channel_id=channel_id, theme=data.theme)
-    await call.message.edit_text("Выбери желаемую тему поста из списка", reply_markup=buttons)
+    await call.message.edit_text("📰 Выберите тему публикаций.", reply_markup=buttons)
 
 
 @router.callback_query(ThemeCb.filter(F.action == "set"))
@@ -30,4 +30,4 @@ async def set_theme(call: CallbackQuery, callback_data: ThemeCb):
     channel.theme = theme
     await channel_service.update_channel_settings(channel=channel)
     buttons = get_back_button_to_settings(channel_id=channel_id)
-    await call.message.edit_text("Тема успешно установлена !", reply_markup=buttons)
+    await call.message.edit_text("✅ Тема публикаций установлена.", reply_markup=buttons)

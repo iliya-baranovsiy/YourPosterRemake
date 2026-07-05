@@ -12,7 +12,7 @@ class SourceKbBuilder:
 
     def create_db_source_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Даныне сервиса",
+            [InlineKeyboardButton(text="📰 Даныне сервиса",
                                   callback_data=ResourceCb(
                                       channel_id=self.channel_id,
                                       resource=Resource.DATABASE,
@@ -22,7 +22,7 @@ class SourceKbBuilder:
 
     def create_file_source_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Свой файл",
+            [InlineKeyboardButton(text="📄 Свой файл",
                                   callback_data=ResourceCb(
                                       channel_id=self.channel_id,
                                       resource=Resource.FILE,
@@ -42,7 +42,7 @@ class SourceKbBuilder:
 
     def create_back_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Назад",
+            [InlineKeyboardButton(text="◀️ Назад",
                                   callback_data=ChannelSettingsCb(
                                       action="openMenu",
                                       channel_id=self.channel_id,
