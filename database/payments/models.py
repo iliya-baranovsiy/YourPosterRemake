@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Index, ForeignKey, Enum, Date, text
-from datetime import date
-from .options import PaymentOptions, PLAN_INFO
+from sqlalchemy import Index, ForeignKey, Enum, Date, text, BigInteger, String, func, DateTime
+from datetime import date, datetime
+from .options import PaymentOptions, PLAN_INFO, PaymentStatus
 from database.engines import Base
 
 
@@ -24,3 +24,17 @@ class PaymentModel(Base):
     user: Mapped["UserModel"] = relationship("UserModel", back_populates="payments")
 
     __table_args__ = (Index("user_payment_index", "user_id", "end_date"),)
+
+
+class PaymentTransactions(Base):
+    __tablename__ = "Payments_data"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(BigInteger)
+    amount: Mapped[int] = mapped_column(BigInteger)
+    telegram_charge_id: Mapped[str] = mapped_column(String, unique=True)
+    payload: Mapped[str] = mapped_column(String, nullable=True)
+    status: Mapped[PaymentStatus] = mapped_column(Enum(PaymentStatus))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    __table_args__ = (Index("payment_data_index", "user_id", "telegram_charge_id"),)

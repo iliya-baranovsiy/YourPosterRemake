@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: de5c8be6d15e
+Revision ID: 0f5af0ecc13d
 Revises: 
-Create Date: 2026-07-04 23:33:46.979754
+Create Date: 2026-07-05 18:36:37.771335
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'de5c8be6d15e'
+revision: str = '0f5af0ecc13d'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -76,6 +76,18 @@ def upgrade() -> None:
     sa.UniqueConstraint('title')
     )
     op.create_index('title_drop_index_IT', 'ItTechnologiesNews', ['title', 'dropDate'], unique=False)
+    op.create_table('Payments_data',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.BigInteger(), nullable=False),
+    sa.Column('amount', sa.BigInteger(), nullable=False),
+    sa.Column('telegram_charge_id', sa.String(), nullable=False),
+    sa.Column('payload', sa.String(), nullable=True),
+    sa.Column('status', sa.Enum('SUCCESS', 'SETBACK', name='paymentstatus'), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('telegram_charge_id')
+    )
+    op.create_index('payment_data_index', 'Payments_data', ['user_id', 'telegram_charge_id'], unique=False)
     op.create_table('ScienceNews',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
@@ -215,6 +227,8 @@ def downgrade() -> None:
     op.drop_table('ShowBisNews')
     op.drop_index('title_drop_index_science', table_name='ScienceNews')
     op.drop_table('ScienceNews')
+    op.drop_index('payment_data_index', table_name='Payments_data')
+    op.drop_table('Payments_data')
     op.drop_index('title_drop_index_IT', table_name='ItTechnologiesNews')
     op.drop_table('ItTechnologiesNews')
     op.drop_index('title_drop_index_games', table_name='GamesNews')

@@ -33,3 +33,7 @@ class ResourceCb(CallbackData, prefix="Resource"):
 class LoadCb(CallbackData, prefix="fileLoad"):
     channel_id: int
     action: str
+
+
+class StarsDepositCb(CallbackData, prefix="starsDeposit"):
+    amount: int

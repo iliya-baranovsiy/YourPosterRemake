@@ -9,6 +9,11 @@ class PaymentOptions(str, enum.Enum):
     VIP = "VIP"
 
 
+class PaymentStatus(str, enum.Enum):
+    SUCCESS = "SUCCESS"
+    SETBACK = "SETBACK"
+
+
 @dataclass(frozen=True)
 class PlanInfo:
     priority: int
