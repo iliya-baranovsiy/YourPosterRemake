@@ -11,20 +11,20 @@ class KbBuilder:
 
     def create_load_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Загрузить файл",
+            [InlineKeyboardButton(text="📤 Загрузить файл",
                                   callback_data=LoadCb(channel_id=self.channel_id, action="load").pack())]
         )
 
     def create_request_to_del_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Удалить посты",
+            [InlineKeyboardButton(text="🗑️ Удалить публикации",
                                   callback_data=LoadCb(channel_id=self.channel_id, action="requestToDel").pack())]
         )
 
     def create_back_button(self):
         self.kb.append(
             [InlineKeyboardButton(
-                text="Назад", callback_data=ChannelSettingsCb(
+                text="◀️ Назад", callback_data=ChannelSettingsCb(
                     channel_id=self.channel_id,
                     action="openMenu", ).pack()
             )]
@@ -33,9 +33,9 @@ class KbBuilder:
     def create_request_to_del_buttons(self):
         self.kb.append(
             [
-                InlineKeyboardButton(text="Да",
+                InlineKeyboardButton(text="✅ Удалить",
                                      callback_data=LoadCb(channel_id=self.channel_id, action="delete").pack()),
-                InlineKeyboardButton(text="Нет", callback_data=ChannelSettingsCb(
+                InlineKeyboardButton(text="❌ Отмена", callback_data=ChannelSettingsCb(
                     action="loadFileMenu",
                     channel_id=self.channel_id, ).pack())
             ]

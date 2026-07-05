@@ -26,7 +26,7 @@ async def request_to_load_file_menu(call: CallbackQuery, callback_data: ChannelS
     posts_count = await ext_service.get_file_posts_count(channel_id=channel_id)
     status = await ext_service.request_to_load_file(channel_id=channel_id)
     buttons = LoadFileKb(channel_id=channel_id, status=status, file_posts_count=posts_count).get_kb()
-    await call.message.edit_text("Выбери один из пунктов меню", reply_markup=buttons)
+    await call.message.edit_text("📄 Файл с публикациями\n\nВыберите действие.", reply_markup=buttons)
 
 
 @router.callback_query(LoadCb.filter((F.action == "requestToDel")))
@@ -34,7 +34,8 @@ async def request_to_load_file_menu(call: CallbackQuery, callback_data: ChannelS
 @save_work()
 async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
     buttons = get_request_to_del_kb(channel_id=callback_data.channel_id)
-    await call.message.edit_text("Ты действительно хочешь удалить все загруженные данные ?", reply_markup=buttons)
+    await call.message.edit_text("🗑️ Удалить все загруженные публикации?\n\nЭто действие нельзя отменить.",
+                                 reply_markup=buttons)
 
 
 @router.callback_query(LoadCb.filter(F.action == "delete"))
@@ -46,9 +47,9 @@ async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
     status = await ext_service.delete_file_records(channel_id=channel_id)
     buttons = get_back_button_to_settings(channel_id=channel_id)
     if status == Status.OK:
-        await call.message.edit_text("Удалено успешно", reply_markup=buttons)
+        await call.message.edit_text("✅ Все загруженные публикации удалены.", reply_markup=buttons)
     else:
-        await call.message.edit_text("Что-то пошло не так", reply_markup=buttons)
+        await call.message.edit_text("⚠️ Не удалось выполнить операцию.\n\nПопробуйте еще раз.", reply_markup=buttons)
 
 
 @router.callback_query(LoadCb.filter(F.action == "load"))
@@ -57,9 +58,10 @@ async def request_to_delete(call: CallbackQuery, callback_data: LoadCb):
 async def request_to_load_file(call: CallbackQuery, callback_data: LoadCb, state: FSMContext):
     channel_id = callback_data.channel_id
     buttons = get_back_button_to_settings(channel_id=channel_id)
-    await call.message.edit_text("Отправь мне файл по примеру ниже или вернись в меню")
+    await call.message.edit_text(
+        "📄 Загрузите файл с публикациями в формате Excel.\n\nИспользуйте шаблон ниже. После заполнения отправьте файл в этот чат.")
     await call.message.answer_document(document=FSInputFile(Path("botLogic") / "src" / "example.xlsx"))
-    await call.message.answer("Вернуться в меню", reply_markup=buttons)
+    await call.message.answer("◀️ Вернуться в меню", reply_markup=buttons)
     await state.update_data(channel_id=channel_id)
     await state.set_state(LoadFileState.wait_file_loading)
 
@@ -79,10 +81,11 @@ async def load_file_handler(msg: Message, state: FSMContext):
                 ext = ExtensionService()
                 await ext.add_file_records(channel_id=channel_id, records=records)
                 await clean_state(state)
-                await msg.answer(f"Файл успешно загружен, найдено {len(records)} записей", reply_markup=buttons)
+                await msg.answer(f"✅ Файл успешно загружен.\n\nНайдено публикаций: <b>{len(records)}</b>",
+                                 reply_markup=buttons)
             else:
-                await msg.answer("Записей не найдено", reply_markup=buttons)
+                await msg.answer("⚠️ В файле не найдено ни одной публикации.", reply_markup=buttons)
         except:
-            await msg.answer("Что-то пошло не так, проверь правильность файла", reply_markup=buttons)
+            await msg.answer("⚠️ Не удалось обработать файл.\n\nУбедитесь, что он соответствует шаблону, и попробуйте снова.", reply_markup=buttons)
     else:
-        await msg.answer("Отправь пожалуйста файл", reply_markup=buttons)
+        await msg.answer("📄 Отправьте файл с публикациями.", reply_markup=buttons)

@@ -18,10 +18,12 @@ async def stars_amount_choice(call: CallbackQuery, state: FSMContext):
     await clean_state(state)
     buttons = get_amount_stars_kb()
     try:
-        await call.message.edit_text("Выбери сумму", reply_markup=buttons)
+        await call.message.edit_text("⭐ Пополнение через Telegram Stars\n\nВыберите сумму пополнения.",
+                                     reply_markup=buttons)
     except:
         await call.message.delete()
-        await call.message.answer("Выбери сумму", reply_markup=buttons)
+        await call.message.answer("⭐ Пополнение через Telegram Stars\n\nВыберите сумму пополнения.",
+                                  reply_markup=buttons)
 
 
 @router.callback_query(StarsDepositCb.filter())
@@ -69,11 +71,20 @@ async def successful_payment(message: Message, state: FSMContext):
     status = await pay_service.pay(user_id=user_id, amount=amount, telegram_charge_id=tg_charge_id, payload=payload)
     if status == Status.OK:
         await message.answer(
-            text=f"✅ Успешно оплачено {amount} ⭐\n\nДля продолжения вернитесь в меню",
+            text=(
+                f"✅ Платеж успешно выполнен.\n\n"
+                f"На баланс зачислено: <b>{amount} ⭐</b>.\n\n"
+                "Для продолжения вернитесь в главное меню."
+            ),
             reply_markup=get_main_menu_button()
         )
     else:
         await message.answer(
-            "⚠️ ОШИБКА ПЛАТЕЖА\n\nСвяжитесь с поддержкой.Для продолжения вернитесь в меню",
+            text=(
+                "⚠️ Не удалось подтвердить платеж.\n\n"
+                "Если средства были списаны, но баланс не пополнился, "
+                "обратитесь в поддержку.\n\n"
+                "Для продолжения вернитесь в главное меню."
+            ),
             reply_markup=get_main_menu_button()
         )

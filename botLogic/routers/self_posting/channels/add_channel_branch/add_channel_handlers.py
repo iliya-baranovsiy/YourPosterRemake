@@ -15,7 +15,9 @@ router = Router(name=__name__)
 @save_work()
 async def asking_for_post(call: CallbackQuery, state: FSMContext):
     buttons = get_back_button()
-    await call.message.edit_text("📢 Перешлите любой пост из вашего Telegram-канала для его привязки.", reply_markup=buttons)
+    await call.message.edit_text(
+        "📢 Подключение канала\n\nПеред подключением убедитесь, что:\n• 🤖 Бот добавлен в канал.\n• 👑 Бот назначен администратором.\n• ✉️ У бота есть право публиковать сообщения.\n\nПосле этого перешлите любой пост из канала в этот чат.",
+        reply_markup=buttons)
     await state.set_state(WaitPostOrId.wait_data)
 
 

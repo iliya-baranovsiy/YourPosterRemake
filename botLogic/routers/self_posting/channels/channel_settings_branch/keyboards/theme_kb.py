@@ -76,7 +76,7 @@ def get_theme_kb(channel_id: int, theme: PostTheme):
 
 def get_back_button_to_settings(channel_id: int):
     kb = [
-        [InlineKeyboardButton(text="Назад",
+        [InlineKeyboardButton(text="◀️ Назад",
                               callback_data=ChannelSettingsCb(
                                   channel_id=channel_id,
                                   action="openMenu", ).pack())]

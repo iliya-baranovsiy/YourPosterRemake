@@ -11,4 +11,4 @@ router = Router(name=__name__)
 @save_work()
 async def get_deposits_menu(call: CallbackQuery):
     buttons = get_deposits_menu_kb()
-    await call.message.edit_text("Выберите способ оплаты", reply_markup=buttons)
+    await call.message.edit_text("💳 Пополнение баланса\n\nВыберите способ оплаты.", reply_markup=buttons)
