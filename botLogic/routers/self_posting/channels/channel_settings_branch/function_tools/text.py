@@ -10,25 +10,25 @@ def get_settings_menu_text(data: ChannelSettings):
 
 class SettingsMenuBuilder:
     def __init__(self, theme: PostTheme, source: Resource, count: int):
-        self.text = "Информация о настройках\n"
+        self.text = "⚙️ <b>Настройки постинга</b>\n"
         self._theme = theme
         self._source = source
         self._count = count
 
     def add_theme_str(self):
-        self.text += f"Тема поста: {self._theme.value}\n"
+        self.text += f"📫 <b>Тема публикации:</b> {self._theme.value}\n"
 
     def add_posting_is_active_str(self):
-        self.text += "Постинг активен\n"
+        self.text += "📡 <b>Статус:</b> 🟢 Активен\n"
 
     def add_posting_non_active_str(self):
-        self.text += "Постинг не активен\n"
+        self.text += "📡 <b>Статус:</b> 🔴 Неактивен\n"
 
     def add_source_str(self):
-        self.text += f"Источник: {self._source.value}\n"
+        self.text += f"📰 <b>Источник:</b> {self._source.value}\n"
 
     def add_file_posts_count_text(self):
-        self.text += f"Записей из файла {self._count}\n"
+        self.text += f"🗄 <b>Записей из файла:</b> {self._count}\n"
 
 
 class SettingsMenuText:
@@ -52,6 +52,8 @@ class SettingsMenuText:
         self.builder.add_source_str()
         if self.source == Resource.FILE:
             self.builder.add_file_posts_count_text()
+        else:
+            self.builder.add_theme_str()
         if self.is_active:
             self.builder.add_posting_is_active_str()
         else:

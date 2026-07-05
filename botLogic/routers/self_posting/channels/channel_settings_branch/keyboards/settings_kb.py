@@ -10,19 +10,19 @@ class SettingsKbBuilder:
         self.channel_id = channel_id
 
     def create_theme_button(self):
-        self.kb.append([InlineKeyboardButton(text="Тема поста",
+        self.kb.append([InlineKeyboardButton(text="📰 Тема публикаций",
                                              callback_data=ChannelSettingsCb(
                                                  action="openThemeMenu",
                                                  channel_id=self.channel_id, ).pack())])
 
     def create_source_button(self):
-        self.kb.append([InlineKeyboardButton(text="Сменить ресурс",
+        self.kb.append([InlineKeyboardButton(text="🔄 Источник данных",
                                              callback_data=ChannelSettingsCb(
                                                  action="changeSource",
                                                  channel_id=self.channel_id, ).pack())])
 
     def create_load_file_button(self):
-        self.kb.append([InlineKeyboardButton(text="Данные файла",
+        self.kb.append([InlineKeyboardButton(text="📄 Данные файла",
                                              callback_data=ChannelSettingsCb(
                                                  action="loadFileMenu",
                                                  channel_id=self.channel_id, ).pack())])
@@ -35,27 +35,27 @@ class SettingsKbBuilder:
                                       channel_id=self.channel_id, ).pack())])
 
     def create_posts_time_button(self):
-        self.kb.append([InlineKeyboardButton(text="Время постов",
+        self.kb.append([InlineKeyboardButton(text="🕒 Время публикации",
                                              callback_data=ChannelSettingsCb(
                                                  action="openTimeList",
                                                  channel_id=self.channel_id, ).pack())])
 
     def create_activate_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Включить автопостинг",
+            [InlineKeyboardButton(text="▶️ Запустить постинг",
                                   callback_data=ChannelSettingsCb(
                                       action="activatePosting",
                                       channel_id=self.channel_id, ).pack())])
 
     def create_deactivate_button(self):
         self.kb.append(
-            [InlineKeyboardButton(text="Выключить автопостинг",
+            [InlineKeyboardButton(text="⏸️ Остановить постинг",
                                   callback_data=ChannelSettingsCb(
                                       action="deactivatePosting",
                                       channel_id=self.channel_id, ).pack())])
 
     def create_back_button(self):
-        self.kb.append([InlineKeyboardButton(text="Назад",
+        self.kb.append([InlineKeyboardButton(text="◀️ Назад",
                                              callback_data=ChannelCb(
                                                  channel_id=self.channel_id,
                                                  action="openChannelMenu",

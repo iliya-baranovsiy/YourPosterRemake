@@ -23,8 +23,6 @@ class Poster:
         self.bot = bot
 
     async def make_post(self, tup):
-        # current_time = datetime.now().time().strftime("%H:%M")
-        # channels_ids = await self.orm.get_current_channel_ids(current_time=current_time)
         channel = await self.channel_service.get_channel_settings(channel_id=tup[0], tg_id=tup[1])
         payment = await self.user_service.get_only_payment_plan(tg_id=tup[1])
         if channel.posting_is_active:
